@@ -17,7 +17,7 @@ dependencies:
   intl: ^0.20.2
   overlay_support: ^2.1.0
   progress_state_button: ^1.0.4
-  retrofit_generator: ^9.7.0
+  retrofit_generator: ^8.1.0
   soundpool: ^2.4.1
 
 dev_dependencies:
