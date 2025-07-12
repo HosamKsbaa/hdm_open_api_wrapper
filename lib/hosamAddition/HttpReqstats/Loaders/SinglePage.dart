@@ -1,0 +1,124 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../Base.dart';
+import '../httpStats.dart';
+import 'package:retrofit/retrofit.dart'as retrofit ;
+
+/// A StatelessWidget that handles API requests and displays different states (idle, loading, success, error, empty success).
+class ApiSinglePage<ResponseObj> extends StatelessWidget {
+  /// Function to make the API request.
+  final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
+
+  /// State management for HTTP requests.
+  late  HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
+
+  /// Widget builder for success state.
+  final Widget Function(BuildContext context, ResponseObj response) child;
+
+  /// Creates an instance of ApiSinglePage.
+  ApiSinglePage({
+    Key? key,
+    required this.requestFunction,
+    required this.child,
+    this.httpRequestsStates,
+  }) : super(key: key){
+    httpRequestsStates ??= HDMHttpRequestsStates<ResponseObj>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ApiBase(
+      requestFunction: requestFunction,
+      httpRequestsStates: httpRequestsStates,
+      buildIdle: _buildIdle,
+      buildLoading: _buildLoading,
+      buildSuccess: child,
+      buildError: _buildError,
+      buildEmptySuccess: _buildEmptySuccess,
+    );
+  }
+
+  Widget _buildIdle(BuildContext context) {
+    return Material(
+      child: Container(
+        color: Colors.white,
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Icon(Icons.error),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    return Material(
+      child: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context) {
+    return Material(
+      child: Container(
+        color: Colors.white,
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Icon(Icons.error),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptySuccess(BuildContext context) {
+    return Material(
+      child: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
