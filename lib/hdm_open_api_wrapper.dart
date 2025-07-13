@@ -8,6 +8,9 @@ export 'hosamAddition/HttpReqstats/ErrorLogic.dart';
 export 'hosamAddition/SnackBars/scaffoldMessengerKey.dart';
 export 'hosamAddition/Sounds/SoundsControler.dart';
 export 'hosamAddition/Converters/Converters.dart';
+export 'hosamAddition/HttpReqstats/Loaders/pageWIthMore.dart';
+export 'hosamAddition/HttpReqstats/Loaders/SinglePage.dart';
+export 'hosamAddition/HttpReqstats/Loaders/NewFutButton.dart';
 
 /// A Calculator.
 class HOAW {
