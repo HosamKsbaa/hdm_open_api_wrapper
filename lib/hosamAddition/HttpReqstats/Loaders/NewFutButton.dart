@@ -39,24 +39,14 @@ class ApiButton<h> extends StatefulWidget {
   final ButtonStyle buttonStyle;
 
   /// Creates an instance of ApiButton.
-  ApiButton({
-    Key? key,
-    required this.requestFunction,
-    required this.onSuccess,
-    Widget? successWidget,
-    Widget? loadingWidget,
-    Widget? errorWidget,
-    this.isitReady = IsReady,
-    Widget? idleNotReadyWidget,
-    required this.idleWidget,
-    required this.buttonStyle,
-  })  : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle),
-        loadingWidget = loadingWidget ?? _defaultLoadingButton(buttonStyle),
-        errorWidget = errorWidget ?? _defaultErrorButton(buttonStyle),
-        idleNotReadyWidget = idleNotReadyWidget ?? _defaultideleNotReady(buttonStyle),
-        // isitReady = isitReady ?? IsReady(),
+  ApiButton({Key? key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isitReady = IsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle})
+    : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle),
+      loadingWidget = loadingWidget ?? _defaultLoadingButton(buttonStyle),
+      errorWidget = errorWidget ?? _defaultErrorButton(buttonStyle),
+      idleNotReadyWidget = idleNotReadyWidget ?? _defaultideleNotReady(buttonStyle),
 
-        super(key: key);
+      // isitReady = isitReady ?? IsReady(),
+      super(key: key);
 
   static bool IsReady() {
     return true;
@@ -66,10 +56,7 @@ class ApiButton<h> extends StatefulWidget {
     return ElevatedButton(
       style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
       onPressed: null,
-      child: const Text(
-        'تم بنجاح',
-        style: TextStyle(color: Colors.white),
-      ),
+      child: const Text('تم بنجاح', style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -80,14 +67,7 @@ class ApiButton<h> extends StatefulWidget {
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 24,
-            width: 24,
-            child: CircularProgressIndicator(
-              color: Colors.black,
-              strokeWidth: 2,
-            ),
-          ),
+          SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2)),
           SizedBox(width: 10),
           Text('جار التحميل...', style: TextStyle(color: Colors.white)),
         ],
@@ -99,10 +79,7 @@ class ApiButton<h> extends StatefulWidget {
     return ElevatedButton(
       style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.red)),
       onPressed: null,
-      child: const Text(
-        'حدث خطأ، حاول مرة أخرى',
-        style: TextStyle(color: Colors.white),
-      ),
+      child: const Text('حدث خطأ، حاول مرة أخرى', style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -110,10 +87,7 @@ class ApiButton<h> extends StatefulWidget {
     return ElevatedButton(
       style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.grey)),
       onPressed: null,
-      child: const Text(
-        'رجاء وفر جميع البيانات',
-        style: TextStyle(color: Colors.white),
-      ),
+      child: const Text('رجاء وفر جميع البيانات', style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -121,12 +95,7 @@ class ApiButton<h> extends StatefulWidget {
   _ApiButtonState<h> createState() => _ApiButtonState<h>();
 }
 
-enum ApiButtonState {
-  loading,
-  success,
-  error,
-  idle,
-}
+enum ApiButtonState { loading, success, error, idle }
 
 class _ApiButtonState<h> extends State<ApiButton<h>> {
   ApiButtonState states = ApiButtonState.idle;
@@ -139,10 +108,10 @@ class _ApiButtonState<h> extends State<ApiButton<h>> {
     });
 
     try {
-      HttpResponse<dynamic> response = await widget.requestFunction(); // Ensure the response type aligns with your API response
+      HttpResponse<h> response = await widget.requestFunction(); // Ensure the response type aligns with your API response
       if (ApiErrorChecker.checkResponse(response)) {
         // Using the error checker to validate response
-        _responseObj = response.response.data; // Assuming data is not null based on checkResponse implementation
+        _responseObj = response.data; // Use response.data instead of response.response.data
 
         setState(() {
           states = ApiButtonState.success;
@@ -160,10 +129,7 @@ class _ApiButtonState<h> extends State<ApiButton<h>> {
         states = ApiButtonState.error;
       });
       HDMMsg.showSnackBar(title: 'API Error', message: error.response.toString(), contentType: ContentType.failure);
-
-
-    }
-    catch  (error) {
+    } catch (error) {
       print("An exception occurred during API call: $error");
       HDMMsg.showSnackBar(title: 'API Error', message: error.toString(), contentType: ContentType.failure);
 
@@ -179,10 +145,7 @@ class _ApiButtonState<h> extends State<ApiButton<h>> {
         case ApiButtonState.loading:
           return widget.loadingWidget;
         case ApiButtonState.error:
-          return GestureDetector(
-            onTap: _makeRequest,
-            child: widget.errorWidget,
-          );
+          return GestureDetector(onTap: _makeRequest, child: widget.errorWidget);
         case ApiButtonState.success:
           return widget.successWidget;
 
@@ -191,16 +154,10 @@ class _ApiButtonState<h> extends State<ApiButton<h>> {
           if (!widget.isitReady()) {
             return widget.idleNotReadyWidget;
           }
-          return GestureDetector(
-            onTap: _makeRequest,
-            child: widget.idleWidget(widget.buttonStyle),
-          );
+          return GestureDetector(onTap: _makeRequest, child: widget.idleWidget(widget.buttonStyle));
       }
     }
 
-    return SizedBox(
-      child: _buildButton(),
-      width: double.infinity,
-    );
+    return SizedBox(child: _buildButton(), width: double.infinity);
   }
 }
