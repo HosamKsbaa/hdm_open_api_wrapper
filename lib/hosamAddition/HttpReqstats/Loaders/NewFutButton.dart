@@ -125,12 +125,16 @@ class _ApiButtonState<h> extends State<ApiButton<h>> {
       }
     } on DioException catch (error) {
       print("An exception occurred during API call: $error");
+      print("Trace: ${error.stackTrace}");
+
       setState(() {
         states = ApiButtonState.error;
       });
       HDMMsg.showSnackBar(title: 'API Error', message: error.response.toString(), contentType: ContentType.failure);
-    } catch (error) {
+    } catch (error, stackTrace) {
       print("An exception occurred during API call: $error");
+      print("Trace: $stackTrace");
+
       HDMMsg.showSnackBar(title: 'API Error', message: error.toString(), contentType: ContentType.failure);
 
       setState(() {
