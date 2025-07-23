@@ -14,16 +14,7 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   final int pageSize;
   final List<RepetedDate> data = [];
 
-  ApiInfiniteList({
-    Key? key,
-    required this.requestFunction,
-    this.httpRequestsStates,
-    required this.listViewBuilder,
-    required this.isFinished,
-    this.initialPageNumber = 1,
-    this.pageSize = 20,
-    required this.extractTheLIst,
-  }) : super(key: key);
+  ApiInfiniteList({Key? key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst}) : super(key: key);
 
   @override
   _ApiInfiniteListState<ResponseObj, RepetedDate> createState() => _ApiInfiniteListState<ResponseObj, RepetedDate>();
@@ -48,9 +39,18 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
     _makeRequest();
   }
 
+  @override
+  void dispose() {
+    // Clear the callback to prevent memory leaks
+    httpRequestsStates.set = null;
+    super.dispose();
+  }
+
   Future<void> _makeRequest() async {
-    if (isLoading) return;
-    setState(() => isLoading = true);
+    if (isLoading || !mounted) return;
+    if (mounted) {
+      setState(() => isLoading = true);
+    }
     httpRequestsStates.setLoading();
     try {
       retrofit.HttpResponse<ResponseObj> req = await widget.requestFunction(pageNumber, widget.pageSize);
@@ -59,19 +59,26 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
       if (widget.isFinished(widget.extractTheLIst(response))) {
         isFinished = true;
       } else {
-        setState(() {
-          pageNumber++;
-        });
+        if (mounted) {
+          setState(() {
+            pageNumber++;
+          });
+        }
       }
       httpRequestsStates.setSuccess(widget.data);
     } catch (e) {
       httpRequestsStates.setErr(e.toString());
     } finally {
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
   Future<bool> _loadMore() async {
+    if (!mounted || isFinished) {
+      return false;
+    }
     if (!isFinished) {
       await _makeRequest();
       return true;
@@ -122,12 +129,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
         }
         return false;
       },
-      child: LoadMore(
-
-        isFinish: isFinished,
-        onLoadMore: _loadMore,
-        child: widget.listViewBuilder(context, widget.data),
-      ),
+      child: LoadMore(isFinish: isFinished, onLoadMore: _loadMore, child: widget.listViewBuilder(context, widget.data)),
     );
   }
 }
