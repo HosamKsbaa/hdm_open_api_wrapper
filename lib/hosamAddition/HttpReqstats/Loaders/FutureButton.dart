@@ -36,9 +36,12 @@ class FutureButton<T> extends StatefulWidget {
   /// Optional: Style for the button.
   final ButtonStyle buttonStyle;
 
+  /// Reset functionality - if true, button will reset to idle after 5 seconds on success
+  final bool? resetAfterSuccess;
+
   /// Creates an instance of FutureButton.
-  FutureButton({Key? key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isReady = _defaultIsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle, this.responseValidator})
-    : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle),
+  FutureButton({Key? key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isReady = _defaultIsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle, this.responseValidator, this.resetAfterSuccess})
+    : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle, resetAfterSuccess),
       loadingWidget = loadingWidget ?? _defaultLoadingButton(buttonStyle),
       errorWidget = errorWidget ?? _defaultErrorButton(buttonStyle),
       idleNotReadyWidget = idleNotReadyWidget ?? _defaultIdleNotReady(buttonStyle),
@@ -48,11 +51,12 @@ class FutureButton<T> extends StatefulWidget {
     return true;
   }
 
-  static Widget _defaultSuccessButton(ButtonStyle buttonStyle) {
+  static Widget _defaultSuccessButton(ButtonStyle buttonStyle, [bool? resetAfterSuccess]) {
+    final message = resetAfterSuccess == true ? 'تم الإرسال' : 'تم بنجاح';
     return ElevatedButton(
       style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
       onPressed: null,
-      child: const Text('تم بنجاح', style: TextStyle(color: Colors.white)),
+      child: Text(message, style: const TextStyle(color: Colors.white)),
     );
   }
 
@@ -148,6 +152,10 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
         case FutureButtonState.error:
           return GestureDetector(onTap: _makeRequest, child: widget.errorWidget);
         case FutureButtonState.success:
+          // If reset is enabled, make success state clickable to retry
+          if (widget.resetAfterSuccess == true) {
+            return GestureDetector(onTap: _makeRequest, child: widget.successWidget);
+          }
           return widget.successWidget;
         case FutureButtonState.idle:
           if (!widget.isReady()) {
