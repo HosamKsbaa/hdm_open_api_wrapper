@@ -45,12 +45,13 @@ class HDMHttpRequestsStates<T> {
     states = HDMHttpRequestsStatesEnum.fail;
     if (deBug) print("Set to fail");
     _set();
-    _showErrorToast(message);
+    print(message);
+    // _showErrorToast(message);
   }
 
-  void _showErrorToast(String message) {
-    toast(message, duration: Duration(seconds: 10));
-  }
+  // void _showErrorToast(String message) {
+  //   toast(message, duration: Duration(seconds: 10));
+  // }
 
   void setLoading() {
     states = HDMHttpRequestsStatesEnum.loading;
