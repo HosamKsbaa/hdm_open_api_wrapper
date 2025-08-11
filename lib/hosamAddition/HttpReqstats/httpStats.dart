@@ -37,7 +37,7 @@ class HDMHttpRequestsStates<T> {
     _set();
   }
 
-  Future<void> setErr(String message) async {
+  Future<void> setErr(String message, StackTrace stackTrace) async {
     if (this.onErr != null) {
       this.onErr!();
     }
@@ -46,6 +46,7 @@ class HDMHttpRequestsStates<T> {
     if (deBug) print("Set to fail");
     _set();
     print(message);
+    print(stackTrace);
     // _showErrorToast(message);
   }
 

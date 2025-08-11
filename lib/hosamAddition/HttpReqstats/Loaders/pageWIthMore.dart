@@ -66,8 +66,8 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
         }
       }
       httpRequestsStates.setSuccess(widget.data);
-    } catch (e) {
-      httpRequestsStates.setErr(e.toString());
+    } catch (e ,s) {
+      httpRequestsStates.setErr(e.toString(),s);
     } finally {
       if (mounted) {
         setState(() => isLoading = false);

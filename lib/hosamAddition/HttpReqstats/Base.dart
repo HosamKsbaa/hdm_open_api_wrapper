@@ -49,12 +49,12 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       } else {
         throw Exception("API response error.");
       }
-    } catch (e) {
-      widget.httpRequestsStates!.setErr(e.toString());
+    } catch (e,s) {
+      widget.httpRequestsStates!.setErr(e.toString(),s);
       throw e;
     }
   }
-
+// chalet_reservations_list_response
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<ResponseObj>(
