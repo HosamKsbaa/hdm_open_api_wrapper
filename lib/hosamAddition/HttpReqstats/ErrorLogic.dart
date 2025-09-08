@@ -5,7 +5,6 @@ class ApiErrorChecker {
   static final _talker = TalkerFlutter.init();
 
   static bool checkResponse<T>(retrofit.HttpResponse<T> response) {
-    _talker.debug("Checking response with status code: ${response.response.statusCode}");
     if (response.response.statusCode == 200) {
       var responseData = response.response.data;
 
@@ -27,7 +26,6 @@ class ApiErrorChecker {
       _talker.error("API Error: Status code not 200. Error message: $errorMessage");
       return false;
     }
-    _talker.debug("Response passed all checks.");
     return true;
   }
 }
