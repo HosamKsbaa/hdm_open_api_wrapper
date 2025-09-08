@@ -18,6 +18,7 @@ dependencies:
   overlay_support: ^2.1.0
   progress_state_button: ^1.0.4
   retrofit_generator: ^8.1.0
+  talker_flutter: ^4.4.1
   # soundpool: ^2.4.1
 
 dev_dependencies:
