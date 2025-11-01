@@ -6,23 +6,14 @@ import 'httpStats.dart'; // Ensure this import is correct
 
 class ApiBase<ResponseObj> extends StatefulWidget {
   final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
-  late  HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
+  late HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
   final Widget Function(BuildContext context) buildIdle;
   final Widget Function(BuildContext context) buildLoading;
   final Widget Function(BuildContext context, ResponseObj response) buildSuccess;
   final Widget Function(BuildContext context) buildError;
   final Widget Function(BuildContext context) buildEmptySuccess;
 
-   ApiBase({
-    Key? key,
-    required this.requestFunction,
-     this.httpRequestsStates,
-    required this.buildIdle,
-    required this.buildLoading,
-    required this.buildSuccess,
-    required this.buildError,
-    required this.buildEmptySuccess,
-  }) : super(key: key){
+  ApiBase({Key? key, required this.requestFunction, this.httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess}) : super(key: key) {
     httpRequestsStates ??= HDMHttpRequestsStates<ResponseObj>();
   }
 
@@ -43,18 +34,20 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
     widget.httpRequestsStates!.setLoading();
     try {
       var response = await widget.requestFunction();
-      if (ApiErrorChecker.checkResponse(response)) { // Use the error checker
+      if (ApiErrorChecker.checkResponse(response)) {
+        // Use the error checker
         widget.httpRequestsStates!.setSuccess(response.data);
         return response.data;
       } else {
         throw Exception("API response error.");
       }
-    } catch (e,s) {
-      widget.httpRequestsStates!.setErr(e.toString(),s);
+    } catch (e, s) {
+      widget.httpRequestsStates!.setErr(e.toString(), s);
       throw e;
     }
   }
-// chalet_reservations_list_response
+
+  // chalet_reservations_list_response
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<ResponseObj>(
@@ -67,11 +60,14 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               widget.buildError(context),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _future = _makeRequest(); // Retry request
-                }),
-                child: const Text('Retry'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () => setState(() {
+                    _future = _makeRequest(); // Retry request
+                  }),
+                  child: const Text('المحاوله مره اخري', style: TextStyle(fontSize: 16, color: Colors.white)),
+                ),
               ),
             ],
           );
@@ -84,4 +80,3 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
     );
   }
 }
-

@@ -32,7 +32,15 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   }
 
   Widget _buildError(BuildContext context) {
-    return const Center(child: Icon(Icons.error, size: 20, color: Colors.red));
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const Center(child: Icon(Icons.error, size: 20, color: Colors.red)),
+          Text('حدث خطأ ما..', style: const TextStyle(fontSize: 16, color: Colors.red)),
+        ],
+      ),
+    );
   }
 
   Widget _buildEmptySuccess(BuildContext context) {
