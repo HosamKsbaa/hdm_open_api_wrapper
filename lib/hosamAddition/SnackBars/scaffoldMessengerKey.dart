@@ -13,23 +13,29 @@ final MessengerImpl HDMMsg = MessengerImpl();
 class MessengerImpl {
   @override
   void showSnackBar({required title, required message, required contentType}) {
-    HOAW.scaffoldMessengerKey.currentState!
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(
+    if (HOAW.scaffoldMessengerKey.currentState != null) {
+      HOAW.scaffoldMessengerKey.currentState!
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            /// need to set following properties for best effect of awesome_snackbar_content
+            elevation: 0,
+            behavior: SnackBarBehavior.floating,
 
-        /// need to set following properties for best effect of awesome_snackbar_content
-        elevation: 0,
-        behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            content: AwesomeSnackbarContent(
+              // messageFontSize: 16,
+              // titleFontSize: 22,
+              title: title,
+              message: message,
 
-        backgroundColor: Colors.transparent,
-        content: AwesomeSnackbarContent(
-          // messageFontSize: 16,
-          // titleFontSize: 22,
-          title: title,
-          message: message,
-          /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-          contentType: contentType,
-        ),
-      ));
+              /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+              contentType: contentType,
+            ),
+          ),
+        );
+    } else {
+      print('Hos ========================= > ScaffoldMessenger is not mounted');
+    }
   }
 }
