@@ -10,15 +10,19 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
   final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
 
   /// State management for HTTP requests.
-  late HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
+  final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
 
   /// Widget builder for success state.
   final Widget Function(BuildContext context, ResponseObj response) child;
 
   /// Creates an instance of ApiSinglePage.
-  ApiSinglePage({Key? key, required this.requestFunction, required this.child, this.httpRequestsStates}) : super(key: key) {
-    httpRequestsStates ??= HDMHttpRequestsStates<ResponseObj>();
-  }
+  ApiSinglePage({
+    Key? key,
+    required this.requestFunction,
+    required this.child,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
