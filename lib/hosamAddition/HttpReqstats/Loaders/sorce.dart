@@ -373,8 +373,6 @@ String _buildEnglishText(LoadMoreStatus status) {
     case LoadMoreStatus.nomore:
       text = "no more data";
       break;
-    default:
-      text = "";
   }
   return text;
 }
