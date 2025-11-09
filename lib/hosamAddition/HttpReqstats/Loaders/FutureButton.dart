@@ -131,7 +131,6 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
       setState(() {
         states = FutureButtonState.error;
       });
-      // HDMMsg.showSnackBar(title: 'Network Error', message: error.response?.data?.toString() ?? error.message ?? 'خطأ في الشبكة', contentType: ContentType.failure);
     } catch (error, stackTrace) {
       print("An exception occurred during Future call: $error");
       print("Trace: $stackTrace");

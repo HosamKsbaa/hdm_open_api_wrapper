@@ -6,16 +6,24 @@ import 'httpStats.dart'; // Ensure this import is correct
 
 class ApiBase<ResponseObj> extends StatefulWidget {
   final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
-  late HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
+  final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
   final Widget Function(BuildContext context) buildIdle;
   final Widget Function(BuildContext context) buildLoading;
   final Widget Function(BuildContext context, ResponseObj response) buildSuccess;
   final Widget Function(BuildContext context) buildError;
   final Widget Function(BuildContext context) buildEmptySuccess;
 
-  ApiBase({Key? key, required this.requestFunction, this.httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess}) : super(key: key) {
-    httpRequestsStates ??= HDMHttpRequestsStates<ResponseObj>();
-  }
+  ApiBase({
+    Key? key,
+    required this.requestFunction,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+    required this.buildIdle,
+    required this.buildLoading,
+    required this.buildSuccess,
+    required this.buildError,
+    required this.buildEmptySuccess,
+  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
+        super(key: key);
 
   @override
   State<ApiBase> createState() => _ApiBaseState<ResponseObj>();
@@ -31,18 +39,18 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
   }
 
   Future<ResponseObj> _makeRequest() async {
-    widget.httpRequestsStates!.setLoading();
+    widget.httpRequestsStates.setLoading();
     try {
       var response = await widget.requestFunction();
       if (ApiErrorChecker.checkResponse(response)) {
         // Use the error checker
-        widget.httpRequestsStates!.setSuccess(response.data);
+        widget.httpRequestsStates.setSuccess(response.data);
         return response.data;
       } else {
         throw Exception("API response error.");
       }
     } catch (e, s) {
-      widget.httpRequestsStates!.setErr(e.toString(), s);
+      widget.httpRequestsStates.setErr(e.toString(), s);
       throw e;
     }
   }
