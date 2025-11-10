@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 export 'package:dio/dio.dart' hide Headers;
-export 'package:retrofit/retrofit.dart';
 export 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 export 'package:overlay_support/overlay_support.dart';
 export 'hosamAddition/HttpReqstats/httpStats.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:retrofit/retrofit.dart' as retrofit;
+import 'package:dio/dio.dart';
 import 'ErrorLogic.dart';
 import 'httpStats.dart'; // Ensure this import is correct
 
 class ApiBase<ResponseObj> extends StatefulWidget {
-  final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
+  final Future<Response<ResponseObj>> Function() requestFunction;
   final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
   final Widget Function(BuildContext context) buildIdle;
   final Widget Function(BuildContext context) buildLoading;
@@ -44,8 +44,12 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       var response = await widget.requestFunction();
       if (ApiErrorChecker.checkResponse(response)) {
         // Use the error checker
-        widget.httpRequestsStates.setSuccess(response.data);
-        return response.data;
+        final data = response.data;
+        if (data == null) {
+          throw Exception("Response data is null");
+        }
+        widget.httpRequestsStates.setSuccess(data);
+        return data;
       } else {
         throw Exception("API response error.");
       }
