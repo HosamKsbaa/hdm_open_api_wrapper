@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hdm_open_api_wrapper/hosamAddition/HttpReqstats/Loaders/sorce.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../httpStats.dart';
 
 //todo add the error message logic to the rest of the apis
@@ -12,8 +13,21 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   final int initialPageNumber;
   final int pageSize;
   final List<RepetedDate> data = [];
+  final bool useSkeleton;
+  final Widget? skeleton;
 
-  ApiInfiniteList({Key? key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst}) : super(key: key);
+  ApiInfiniteList({
+    Key? key,
+    required this.requestFunction,
+    this.httpRequestsStates,
+    required this.listViewBuilder,
+    required this.isFinished,
+    this.initialPageNumber = 1,
+    this.pageSize = 20,
+    required this.extractTheLIst,
+    this.useSkeleton = false,
+    this.skeleton,
+  }) : super(key: key);
 
   @override
   _ApiInfiniteListState<ResponseObj, RepetedDate> createState() => _ApiInfiniteListState<ResponseObj, RepetedDate>();
@@ -110,6 +124,12 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
   }
 
   Widget _buildLoading() {
+    if (widget.useSkeleton && widget.skeleton != null) {
+      return Skeletonizer(
+        enabled: true,
+        child: widget.skeleton!,
+      );
+    }
     return Center(child: CircularProgressIndicator());
   }
 

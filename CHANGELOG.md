@@ -1,3 +1,8 @@
+## 0.1.3
+
+* Add `skeletonizer` support to loaders (`ApiSinglePage`, `ApiSingleWidget`, `ApiInfiniteList`).
+* Add `useSkeleton` and `skeleton` parameters to enable skeleton loading state.
+
 ## 0.1.2
 
 * Remove `Response` wrapper from API signatures.

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'ErrorLogic.dart';
 import 'httpStats.dart'; // Ensure this import is correct
 
@@ -11,8 +12,22 @@ class ApiBase<ResponseObj> extends StatefulWidget {
   final Widget Function(BuildContext context, ResponseObj response) buildSuccess;
   final Widget Function(BuildContext context) buildError;
   final Widget Function(BuildContext context) buildEmptySuccess;
+  final bool useSkeleton;
+  final Widget? skeleton;
 
-  ApiBase({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
+  ApiBase({
+    Key? key,
+    required this.requestFunction,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+    required this.buildIdle,
+    required this.buildLoading,
+    required this.buildSuccess,
+    required this.buildError,
+    required this.buildEmptySuccess,
+    this.useSkeleton = false,
+    this.skeleton,
+  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
+        super(key: key);
 
   @override
   State<ApiBase> createState() => _ApiBaseState<ResponseObj>();
@@ -54,6 +69,12 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          if (widget.useSkeleton && widget.skeleton != null) {
+            return Skeletonizer(
+              enabled: true,
+              child: widget.skeleton!,
+            );
+          }
           return widget.buildLoading(context);
         } else if (snapshot.hasError) {
           return Column(
