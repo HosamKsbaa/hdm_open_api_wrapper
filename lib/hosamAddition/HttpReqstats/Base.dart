@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'ErrorLogic.dart';
 import 'httpStats.dart'; // Ensure this import is correct
 
 class ApiBase<ResponseObj> extends StatefulWidget {
-  final Future<Response<ResponseObj>> Function() requestFunction;
+  final Future<ResponseObj> Function() requestFunction;
   final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
   final Widget Function(BuildContext context) buildIdle;
   final Widget Function(BuildContext context) buildLoading;
@@ -42,14 +41,13 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
     widget.httpRequestsStates.setLoading();
     try {
       var response = await widget.requestFunction();
-      if (ApiErrorChecker.checkResponse(response)) {
+      if (ApiErrorChecker.checkData(response)) {
         // Use the error checker
-        final data = response.data;
-        if (data == null) {
+        if (response == null) {
           throw Exception("Response data is null");
         }
-        widget.httpRequestsStates.setSuccess(data);
-        return data;
+        widget.httpRequestsStates.setSuccess(response);
+        return response;
       } else {
         throw Exception("API response error.");
       }

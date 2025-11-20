@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hdm_open_api_wrapper/hosamAddition/HttpReqstats/Loaders/sorce.dart';
 import '../httpStats.dart';
-import 'package:dio/dio.dart';
 
 //todo add the error message logic to the rest of the apis
 class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
-  final Future<Response<ResponseObj>> Function(int pageNumber, int pageSize) requestFunction;
+  final Future<ResponseObj> Function(int pageNumber, int pageSize) requestFunction;
   final HDMHttpRequestsStates<List<RepetedDate>>? httpRequestsStates;
   final List<RepetedDate> Function(ResponseObj responseObj) extractTheLIst;
   final Widget Function(BuildContext context, List<RepetedDate> items) listViewBuilder;
@@ -53,8 +52,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
     }
     httpRequestsStates.setLoading();
     try {
-      Response<ResponseObj> req = await widget.requestFunction(pageNumber, widget.pageSize);
-      ResponseObj? response = req.data;
+      ResponseObj response = await widget.requestFunction(pageNumber, widget.pageSize);
       if (response != null) {
         widget.data.addAll(widget.extractTheLIst(response));
         if (widget.isFinished(widget.extractTheLIst(response))) {

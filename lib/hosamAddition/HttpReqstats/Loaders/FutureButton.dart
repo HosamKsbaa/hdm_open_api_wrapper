@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
-import '../../SnackBars/scaffoldMessengerKey.dart';
 
 /// A StatefulWidget that handles any Future requests and displays different states (idle, loading, success, error) for a button.
 /// This is the parent/generic class that can handle any type of Future operation.
@@ -124,13 +121,6 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
           states = FutureButtonState.error;
         });
       }
-    } on DioException catch (error) {
-      print("A Dio exception occurred during Future call: $error");
-      print("Trace: ${error.stackTrace}");
-
-      setState(() {
-        states = FutureButtonState.error;
-      });
     } catch (error, stackTrace) {
       print("An exception occurred during Future call: $error");
       print("Trace: $stackTrace");

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 
 import 'FutureButton.dart';
 import 'NewFutButton.dart';
@@ -71,11 +70,7 @@ class ButtonUsageExample extends StatelessWidget {
               requestFunction: () async {
                 // Simulate an HTTP response
                 await Future.delayed(const Duration(seconds: 1));
-                return Response<Map<String, dynamic>>(
-                  data: {'message': 'API call successful', 'userId': 123},
-                  requestOptions: RequestOptions(path: '/test'),
-                  statusCode: 200,
-                );
+                return {'message': 'API call successful', 'userId': 123, 'msg': 'ok', 'send': 'ok'};
               },
               onSuccess: (response) {
                 debugPrint('API response: $response');
@@ -97,7 +92,7 @@ class ButtonUsageExample extends StatelessWidget {
             const Text('Key Differences:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const Text(
               '• FutureButton: Works with any Future<T> type (parent class)\n'
-              '• ApiButton: Extends FutureButton, specialized for HttpResponse<T>\n'
+              '• ApiButton: Extends FutureButton, specialized for API responses\n'
               '• ApiButton inherits all FutureButton functionality + adds API validation\n'
               '• No code duplication - clean inheritance pattern',
               style: TextStyle(fontSize: 14),
