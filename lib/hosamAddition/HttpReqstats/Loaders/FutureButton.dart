@@ -122,13 +122,10 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
         });
       }
     } on DioException catch (error) {
-
       setState(() {
         states = FutureButtonState.error;
       });
     } catch (error, stackTrace) {
-
-
       setState(() {
         states = FutureButtonState.error;
       });
@@ -162,19 +159,32 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
 }
 
 class ApiButtonItem extends StatelessWidget {
-  final VoidCallback? onHover;
-  final ValueChanged<bool>? onFocusChange;
   final ButtonStyle? style;
-  final FocusNode? focusNode;
-  final bool autofocus;
-  final Clip clipBehavior;
-  final MaterialStatesController? statesController;
   final Widget? child;
 
-  const ApiButtonItem({Key? key, this.onHover, this.onFocusChange, this.style, this.focusNode, this.autofocus = false, this.clipBehavior = Clip.none, this.statesController, required this.child}) : super(key: key);
+  const ApiButtonItem({Key? key, this.style, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: null, onLongPress: null, onHover: null, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: child);
+    // Extract styling properties from ButtonStyle
+    final backgroundColor = style?.backgroundColor?.resolve({}) ?? Colors.blue;
+    final foregroundColor = style?.foregroundColor?.resolve({}) ?? Colors.white;
+    final padding = style?.padding?.resolve({}) ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+    final shape = style?.shape?.resolve({}) ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+    final elevation = style?.elevation?.resolve({}) ?? 2.0;
+
+    return Container(
+      padding: padding,
+      decoration: ShapeDecoration(
+        color: backgroundColor,
+        shape: shape,
+        shadows: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: elevation, offset: Offset(0, elevation / 2))],
+      ),
+      child: DefaultTextStyle(
+        style: TextStyle(color: foregroundColor),
+        textAlign: TextAlign.center,
+        child: child ?? const SizedBox.shrink(),
+      ),
+    );
   }
 }
