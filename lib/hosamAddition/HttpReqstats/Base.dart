@@ -12,17 +12,7 @@ class ApiBase<ResponseObj> extends StatefulWidget {
   final Widget Function(BuildContext context) buildError;
   final Widget Function(BuildContext context) buildEmptySuccess;
 
-  ApiBase({
-    Key? key,
-    required this.requestFunction,
-    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
-    required this.buildIdle,
-    required this.buildLoading,
-    required this.buildSuccess,
-    required this.buildError,
-    required this.buildEmptySuccess,
-  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
-        super(key: key);
+  ApiBase({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
 
   @override
   State<ApiBase> createState() => _ApiBaseState<ResponseObj>();
