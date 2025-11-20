@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// A StatefulWidget that handles any Future requests and displays different states (idle, loading, success, error) for a button.
 /// This is the parent/generic class that can handle any type of Future operation.
-class FutureButton<T> extends StatefulWidget {
+class ApiButton<T> extends StatefulWidget {
   /// Function to make the Future request.
   final Future<T> Function() requestFunction;
 
@@ -16,37 +16,37 @@ class FutureButton<T> extends StatefulWidget {
   final bool Function(T response)? responseValidator;
 
   /// Widget to show on success.
-  final ApiElevatedButton? successWidget;
+  final ApiButtonItem? successWidget;
 
   /// Widget to show while loading.
-  final ApiElevatedButton? loadingWidget;
+  final ApiButtonItem? loadingWidget;
 
   /// Widget to show when an error occurs.
-  final ApiElevatedButton? errorWidget;
+  final ApiButtonItem? errorWidget;
 
   /// Widget to show when not ready.
-  final ApiElevatedButton? idleNotReadyWidget;
+  final ApiButtonItem? idleNotReadyWidget;
 
   /// Initial widget before any action (idle state).
-  final ApiElevatedButton Function(ButtonStyle style) idleWidget;
+  final ApiButtonItem Function(ButtonStyle style) idleWidget;
 
   /// Style for the button.
   final ButtonStyle buttonStyle;
 
   /// Creates an instance of FutureButton.
-  const FutureButton({Key? key, required this.requestFunction, required this.onSuccess, this.isReady = _defaultIsReady, this.responseValidator, this.successWidget, this.loadingWidget, this.errorWidget, this.idleNotReadyWidget, required this.idleWidget, required this.buttonStyle}) : super(key: key);
+  const ApiButton({Key? key, required this.requestFunction, required this.onSuccess, this.isReady = _defaultIsReady, this.responseValidator, this.successWidget, this.loadingWidget, this.errorWidget, this.idleNotReadyWidget, required this.idleWidget, required this.buttonStyle}) : super(key: key);
 
   static bool _defaultIsReady() {
     return true;
   }
 
   @override
-  State<FutureButton<T>> createState() => _FutureButtonState<T>();
+  State<ApiButton<T>> createState() => _ApiButtonState<T>();
 }
 
 enum FutureButtonState { idle, loading, success, error }
 
-class _FutureButtonState<T> extends State<FutureButton<T>> {
+class _ApiButtonState<T> extends State<ApiButton<T>> {
   FutureButtonState states = FutureButtonState.idle;
 
   @override
@@ -60,7 +60,7 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
         return widget.idleWidget(widget.buttonStyle);
       case FutureButtonState.loading:
         return widget.loadingWidget ??
-            ApiElevatedButton(
+            ApiButtonItem(
               style: widget.buttonStyle,
               child: const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
             );
@@ -125,7 +125,7 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
   }
 }
 
-class ApiElevatedButton extends StatelessWidget {
+class ApiButtonItem extends StatelessWidget {
   final VoidCallback? onHover;
   final ValueChanged<bool>? onFocusChange;
   final ButtonStyle? style;
@@ -135,7 +135,7 @@ class ApiElevatedButton extends StatelessWidget {
   final MaterialStatesController? statesController;
   final Widget? child;
 
-  const ApiElevatedButton({Key? key, this.onHover, this.onFocusChange, this.style, this.focusNode, this.autofocus = false, this.clipBehavior = Clip.none, this.statesController, required this.child}) : super(key: key);
+  const ApiButtonItem({Key? key, this.onHover, this.onFocusChange, this.style, this.focusNode, this.autofocus = false, this.clipBehavior = Clip.none, this.statesController, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

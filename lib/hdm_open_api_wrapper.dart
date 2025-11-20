@@ -9,8 +9,8 @@ export 'hosamAddition/Sounds/sounds_controller.dart';
 export 'hosamAddition/Converters/Converters.dart';
 export 'hosamAddition/HttpReqstats/Loaders/pageWIthMore.dart';
 export 'hosamAddition/HttpReqstats/Loaders/SinglePage.dart';
-export 'hosamAddition/HttpReqstats/Loaders/NewFutButton.dart';
 export 'hosamAddition/HttpReqstats/Loaders/FutureButton.dart';
+
 
 /// A Calculator.
 class HOAW {
