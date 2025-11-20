@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hdm_open_api_wrapper/hdm_open_api_wrapper.dart';
 
 /// A StatefulWidget that handles any Future requests and displays different states (idle, loading, success, error) for a button.
 /// This is the parent/generic class that can handle any type of Future operation.
@@ -16,72 +17,89 @@ class ApiButton<T> extends StatefulWidget {
   final bool Function(T response)? responseValidator;
 
   /// Widget to show on success.
-  final ApiButtonItem? successWidget;
+  final Widget successWidget;
 
   /// Widget to show while loading.
-  final ApiButtonItem? loadingWidget;
+  final Widget loadingWidget;
 
   /// Widget to show when an error occurs.
-  final ApiButtonItem? errorWidget;
+  final Widget errorWidget;
 
   /// Widget to show when not ready.
-  final ApiButtonItem? idleNotReadyWidget;
+  final Widget idleNotReadyWidget;
 
   /// Initial widget before any action (idle state).
-  final ApiButtonItem Function(ButtonStyle style) idleWidget;
+  final Widget Function(ButtonStyle style) idleWidget;
 
-  /// Style for the button.
+  /// Optional: Style for the button.
   final ButtonStyle buttonStyle;
 
+  /// Reset functionality - if true, button will reset to idle after 5 seconds on success
+  final bool? resetAfterSuccess;
+
   /// Creates an instance of FutureButton.
-  const ApiButton({Key? key, required this.requestFunction, required this.onSuccess, this.isReady = _defaultIsReady, this.responseValidator, this.successWidget, this.loadingWidget, this.errorWidget, this.idleNotReadyWidget, required this.idleWidget, required this.buttonStyle}) : super(key: key);
+  ApiButton({Key? key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isReady = _defaultIsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle, this.responseValidator, this.resetAfterSuccess})
+    : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle, resetAfterSuccess),
+      loadingWidget = loadingWidget ?? _defaultLoadingButton(buttonStyle),
+      errorWidget = errorWidget ?? _defaultErrorButton(buttonStyle),
+      idleNotReadyWidget = idleNotReadyWidget ?? _defaultIdleNotReady(buttonStyle),
+      super(key: key);
 
   static bool _defaultIsReady() {
     return true;
   }
 
+  static Widget _defaultSuccessButton(ButtonStyle buttonStyle, [bool? resetAfterSuccess]) {
+    final message = resetAfterSuccess == true ? 'تم الإرسال' : 'تم بنجاح';
+    return ElevatedButton(
+      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
+      onPressed: null,
+      child: Text(message, style: const TextStyle(color: Colors.white)),
+    );
+  }
+
+  static Widget _defaultLoadingButton(ButtonStyle buttonStyle) {
+    return ElevatedButton(
+      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.orangeAccent)),
+      onPressed: null,
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2)),
+          SizedBox(width: 10),
+          Text('جار التحميل...', style: TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+  }
+
+  static Widget _defaultErrorButton(ButtonStyle buttonStyle) {
+    return ElevatedButton(
+      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.red)),
+      onPressed: null,
+      child: const Text('حدث خطأ، حاول مرة أخرى', style: TextStyle(color: Colors.white)),
+    );
+  }
+
+  static Widget _defaultIdleNotReady(ButtonStyle buttonStyle) {
+    return ElevatedButton(
+      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.grey)),
+      onPressed: null,
+      child: const Text('رجاء وفر جميع البيانات', style: TextStyle(color: Colors.white)),
+    );
+  }
+
   @override
-  State<ApiButton<T>> createState() => _ApiButtonState<T>();
+  _ApiButtonState<T> createState() => _ApiButtonState<T>();
 }
 
-enum FutureButtonState { idle, loading, success, error }
+enum FutureButtonState { loading, success, error, idle }
 
 class _ApiButtonState<T> extends State<ApiButton<T>> {
   FutureButtonState states = FutureButtonState.idle;
+  late T _responseObj;
 
-  @override
-  Widget build(BuildContext context) {
-    if (!widget.isReady()) {
-      return widget.idleNotReadyWidget ?? ElevatedButton(onPressed: null, style: widget.buttonStyle, child: const Text("Not Ready"));
-    }
-
-    switch (states) {
-      case FutureButtonState.idle:
-        return widget.idleWidget(widget.buttonStyle);
-      case FutureButtonState.loading:
-        return widget.loadingWidget ??
-            ApiButtonItem(
-              style: widget.buttonStyle,
-              child: const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-            );
-      case FutureButtonState.success:
-        return widget.successWidget ??
-            ElevatedButton(
-              onPressed: () => _handlePress(),
-              style: widget.buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
-              child: const Icon(Icons.check, color: Colors.white),
-            );
-      case FutureButtonState.error:
-        return widget.errorWidget ??
-            ElevatedButton(
-              onPressed: () => _handlePress(),
-              style: widget.buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.red)),
-              child: const Icon(Icons.error, color: Colors.white),
-            );
-    }
-  }
-
-  Future<void> _handlePress() async {
+  void _makeRequest() async {
     setState(() {
       states = FutureButtonState.loading;
     });
@@ -89,39 +107,57 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
     try {
       T response = await widget.requestFunction();
 
-      bool isValid = true;
-      if (widget.responseValidator != null) {
-        isValid = widget.responseValidator!(response);
-      }
+      // Check if response is valid (if validator is provided)
+      bool isValid = widget.responseValidator?.call(response) ?? true;
 
       if (isValid) {
+        _responseObj = response;
         setState(() {
           states = FutureButtonState.success;
         });
-        widget.onSuccess(response);
-
-        // Reset to idle after a delay
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              states = FutureButtonState.idle;
-            });
-          }
-        });
+        widget.onSuccess(_responseObj);
       } else {
-        print("Response validation failed.");
         setState(() {
           states = FutureButtonState.error;
         });
       }
+    } on DioException catch (error) {
+
+      setState(() {
+        states = FutureButtonState.error;
+      });
     } catch (error, stackTrace) {
-      print("An exception occurred during Future call: $error");
-      print("Trace: $stackTrace");
+
 
       setState(() {
         states = FutureButtonState.error;
       });
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget _buildButton() {
+      switch (states) {
+        case FutureButtonState.loading:
+          return widget.loadingWidget;
+        case FutureButtonState.error:
+          return GestureDetector(onTap: _makeRequest, child: widget.errorWidget);
+        case FutureButtonState.success:
+          // If reset is enabled, make success state clickable to retry
+          if (widget.resetAfterSuccess == true) {
+            return GestureDetector(onTap: _makeRequest, child: widget.successWidget);
+          }
+          return widget.successWidget;
+        case FutureButtonState.idle:
+          if (!widget.isReady()) {
+            return widget.idleNotReadyWidget;
+          }
+          return GestureDetector(onTap: _makeRequest, child: widget.idleWidget(widget.buttonStyle));
+      }
+    }
+
+    return SizedBox(child: _buildButton(), width: double.infinity);
   }
 }
 
