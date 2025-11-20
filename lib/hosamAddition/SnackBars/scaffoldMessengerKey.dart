@@ -3,7 +3,7 @@ import 'package:hdm_open_api_wrapper/hdm_open_api_wrapper.dart';
 
 export 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
-final MessengerImpl hdmMsg = MessengerImpl();
+final MessengerImpl HdmMsg = MessengerImpl();
 
 /// forAi
 /// replace all snakbars with hdmMsg.showSnackBar(title: 'title', message: 'message', contentType: ContentType.success); there is 3 types of content type success, warning, help , failure

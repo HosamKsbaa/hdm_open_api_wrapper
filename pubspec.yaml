@@ -1,6 +1,6 @@
 name: hdm_open_api_wrapper
 description: "HDM Open API wrapper utilities for Flutter: HTTP helpers, snackbars, converters, loaders and simple sound controller."
-version: 0.1.4
+version: 0.1.6
 homepage: https://github.com/HosamKsbaa/hdm_open_api_wrapper
 
 environment:
