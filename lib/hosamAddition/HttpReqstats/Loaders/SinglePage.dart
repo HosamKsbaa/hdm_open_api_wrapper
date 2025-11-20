@@ -2,23 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Base.dart';
 import '../httpStats.dart';
-import 'package:retrofit/retrofit.dart' as retrofit;
+import 'package:dio/dio.dart';
 
 /// A StatelessWidget that handles API requests and displays different states (idle, loading, success, error, empty success).
 class ApiSinglePage<ResponseObj> extends StatelessWidget {
   /// Function to make the API request.
-  final Future<retrofit.HttpResponse<ResponseObj>> Function() requestFunction;
+  final Future<Response<ResponseObj>> Function() requestFunction;
 
   /// State management for HTTP requests.
-  late HDMHttpRequestsStates<ResponseObj>? httpRequestsStates;
+  final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
 
   /// Widget builder for success state.
   final Widget Function(BuildContext context, ResponseObj response) child;
 
   /// Creates an instance of ApiSinglePage.
-  ApiSinglePage({Key? key, required this.requestFunction, required this.child, this.httpRequestsStates}) : super(key: key) {
-    httpRequestsStates ??= HDMHttpRequestsStates<ResponseObj>();
-  }
+  ApiSinglePage({
+    Key? key,
+    required this.requestFunction,
+    required this.child,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

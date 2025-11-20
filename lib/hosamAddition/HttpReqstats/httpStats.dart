@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 enum HDMHttpRequestsStatesEnum { idle, loading, success, fail, successButEmpty }
 
@@ -33,7 +32,7 @@ class HDMHttpRequestsStates<T> {
       this.onIdleAgain!();
     }
     states = HDMHttpRequestsStatesEnum.idle;
-    if (deBug) print("Set to idle");
+    if (deBug) debugPrint("Set to idle");
     _set();
   }
 
@@ -41,12 +40,12 @@ class HDMHttpRequestsStates<T> {
     if (this.onErr != null) {
       this.onErr!();
     }
-    print("Set to fail");
+    debugPrint("Set to fail");
     states = HDMHttpRequestsStatesEnum.fail;
-    if (deBug) print("Set to fail");
+    if (deBug) debugPrint("Set to fail");
     _set();
-    print(message);
-    print(stackTrace);
+    debugPrint(message);
+    debugPrint(stackTrace.toString());
     // _showErrorToast(message);
   }
 
@@ -56,7 +55,7 @@ class HDMHttpRequestsStates<T> {
 
   void setLoading() {
     states = HDMHttpRequestsStatesEnum.loading;
-    if (deBug) print("Set to loading");
+    if (deBug) debugPrint("Set to loading");
     _set();
   }
 
@@ -65,7 +64,7 @@ class HDMHttpRequestsStates<T> {
       this.onSuccess!(result);
     }
     states = HDMHttpRequestsStatesEnum.success;
-    if (deBug) print("Set to success");
+    if (deBug) debugPrint("Set to success");
     _set();
   }
 }

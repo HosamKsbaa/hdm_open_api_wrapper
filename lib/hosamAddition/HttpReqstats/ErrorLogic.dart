@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class ApiErrorChecker {
@@ -13,10 +14,12 @@ class ApiErrorChecker {
         _talker.debug("Response contains 'msg' and 'send' keys.");
         if (responseData['msg'] != 'ok' || responseData['send'] != 'ok') {
           // hdmMsg.showSnackBar(title: 'Notice', message: message, contentType: ContentType.warning);
+          // hdmMsg.showSnackBar(title: 'Notice', message: message, contentType: ContentType.warning);
           _talker.warning("Condition not met: msg='${responseData['msg']}' or send='${responseData['send']}'");
           return false;
         }
       } else if (responseData is Map && responseData.containsKey('msg') && responseData['msg'] != 'ok') {
+        // hdmMsg.showSnackBar(title: 'Error', message: "Error in msg: ${responseData['msg']}", contentType: ContentType.failure);
         // hdmMsg.showSnackBar(title: 'Error', message: "Error in msg: ${responseData['msg']}", contentType: ContentType.failure);
         _talker.error("Error found in 'msg' key: ${responseData['msg']}");
         return false;

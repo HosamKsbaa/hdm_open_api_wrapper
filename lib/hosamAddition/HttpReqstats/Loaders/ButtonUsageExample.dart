@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
 import 'FutureButton.dart';
@@ -72,10 +71,14 @@ class ButtonUsageExample extends StatelessWidget {
               requestFunction: () async {
                 // Simulate an HTTP response
                 await Future.delayed(const Duration(seconds: 1));
-                return HttpResponse<Map<String, dynamic>>({'message': 'API call successful', 'userId': 123}, Response(requestOptions: RequestOptions(path: '/test'), statusCode: 200));
+                return Response<Map<String, dynamic>>(
+                  data: {'message': 'API call successful', 'userId': 123},
+                  requestOptions: RequestOptions(path: '/test'),
+                  statusCode: 200,
+                );
               },
               onSuccess: (response) {
-                print('API response: $response');
+                debugPrint('API response: $response');
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('API Success: ${response['message']}')));
               },
               idleWidget: (buttonStyle) => ElevatedButton(
