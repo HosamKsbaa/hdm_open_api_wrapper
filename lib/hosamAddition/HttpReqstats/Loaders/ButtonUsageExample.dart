@@ -29,7 +29,7 @@ class ButtonUsageExample extends StatelessWidget {
                 print('String response: $response');
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Success: $response')));
               },
-              idleWidget: (buttonStyle) => ElevatedButton(style: buttonStyle, onPressed: null, child: const Text('Call String Future')),
+              idleWidget: (buttonStyle) => ApiElevatedButton(style: buttonStyle,  child: const Text('Call String Future')),
               buttonStyle: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -49,9 +49,8 @@ class ButtonUsageExample extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Success: $response')));
               },
               responseValidator: (response) => response > 0, // Custom validation
-              idleWidget: (buttonStyle) => ElevatedButton(
+              idleWidget: (buttonStyle) => ApiElevatedButton(
                 style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.purple)),
-                onPressed: null,
                 child: const Text('Call Int Future', style: TextStyle(color: Colors.white)),
               ),
               buttonStyle: ElevatedButton.styleFrom(
@@ -76,7 +75,7 @@ class ButtonUsageExample extends StatelessWidget {
                 print('API response: $response');
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('API Success: ${response['message']}')));
               },
-              idleWidget: (buttonStyle) => ElevatedButton(style: buttonStyle, onPressed: null, child: const Text('Call API')),
+              idleWidget: (buttonStyle) => ApiElevatedButton(style: buttonStyle,  child: const Text('Call API')),
               buttonStyle: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

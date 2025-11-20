@@ -16,19 +16,19 @@ class FutureButton<T> extends StatefulWidget {
   final bool Function(T response)? responseValidator;
 
   /// Widget to show on success.
-  final Widget? successWidget;
+  final ApiElevatedButton? successWidget;
 
   /// Widget to show while loading.
-  final Widget? loadingWidget;
+  final ApiElevatedButton? loadingWidget;
 
   /// Widget to show when an error occurs.
-  final Widget? errorWidget;
+  final ApiElevatedButton? errorWidget;
 
   /// Widget to show when not ready.
-  final Widget? idleNotReadyWidget;
+  final ApiElevatedButton? idleNotReadyWidget;
 
   /// Initial widget before any action (idle state).
-  final Widget Function(ButtonStyle style) idleWidget;
+  final ApiElevatedButton Function(ButtonStyle style) idleWidget;
 
   /// Style for the button.
   final ButtonStyle buttonStyle;
@@ -60,8 +60,7 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
         return widget.idleWidget(widget.buttonStyle);
       case FutureButtonState.loading:
         return widget.loadingWidget ??
-            ElevatedButton(
-              onPressed: null,
+            ApiElevatedButton(
               style: widget.buttonStyle,
               child: const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
             );
@@ -123,5 +122,23 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
         states = FutureButtonState.error;
       });
     }
+  }
+}
+
+class ApiElevatedButton extends StatelessWidget {
+  final VoidCallback? onHover;
+  final ValueChanged<bool>? onFocusChange;
+  final ButtonStyle? style;
+  final FocusNode? focusNode;
+  final bool autofocus;
+  final Clip clipBehavior;
+  final MaterialStatesController? statesController;
+  final Widget? child;
+
+  const ApiElevatedButton({Key? key, this.onHover, this.onFocusChange, this.style, this.focusNode, this.autofocus = false, this.clipBehavior = Clip.none, this.statesController, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(onPressed: null, onLongPress: null, onHover: null, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: child);
   }
 }

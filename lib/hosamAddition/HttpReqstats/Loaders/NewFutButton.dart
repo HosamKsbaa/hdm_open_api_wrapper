@@ -7,7 +7,7 @@ import 'FutureButton.dart';
 /// This extends the generic FutureButton and adds API-specific functionality.
 class ApiButton<h> extends FutureButton<h> {
   /// Creates an instance of ApiButton.
-  ApiButton({Key? key, required Future<h> Function() requestFunction, required void Function(h response) onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, bool Function() isReady = _defaultIsReady, Widget? idleNotReadyWidget, required Widget Function(ButtonStyle style) idleWidget, required ButtonStyle buttonStyle})
+  ApiButton({Key? key, required Future<h> Function() requestFunction, required void Function(h response) onSuccess, ApiElevatedButton? successWidget, ApiElevatedButton? loadingWidget, ApiElevatedButton? errorWidget, bool Function() isReady = _defaultIsReady, ApiElevatedButton? idleNotReadyWidget, required ApiElevatedButton Function(ButtonStyle style) idleWidget, required ButtonStyle buttonStyle})
     : super(
         key: key,
         requestFunction: () => _wrapApiRequest(requestFunction),
