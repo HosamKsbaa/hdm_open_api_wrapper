@@ -3,19 +3,42 @@ import 'package:hdm_open_api_wrapper/hosamAddition/HttpReqstats/Loaders/sorce.da
 import 'package:skeletonizer/skeletonizer.dart';
 import '../httpStats.dart';
 
-//todo add the error message logic to the rest of the apis
+/// A StatefulWidget that handles infinite scrolling lists with API pagination.
+///
+/// It manages the loading, success, error, and empty states of the list.
+/// It automatically loads more data when the user scrolls to the bottom.
 class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
+  /// Function to make the API request for a specific page.
   final Future<ResponseObj> Function(int pageNumber, int pageSize) requestFunction;
+
+  /// State management for HTTP requests.
   final HDMHttpRequestsStates<List<RepetedDate>>? httpRequestsStates;
+
+  /// Function to extract the list of items from the API response.
   final List<RepetedDate> Function(ResponseObj responseObj) extractTheLIst;
+
+  /// Builder function for the list view.
   final Widget Function(BuildContext context, List<RepetedDate> items) listViewBuilder;
+
+  /// Function to check if there is no more data to load.
   final bool Function(List<RepetedDate> response) isFinished;
+
+  /// The initial page number to start loading from. Default is 1.
   final int initialPageNumber;
+
+  /// The number of items per page. Default is 20.
   final int pageSize;
+
+  /// The list of data items loaded so far.
   final List<RepetedDate> data = [];
+
+  /// Whether to use skeleton loading.
   final bool useSkeleton;
+
+  /// The skeleton widget to display when loading (if useSkeleton is true).
   final Widget? skeleton;
 
+  /// Creates an instance of ApiInfiniteList.
   ApiInfiniteList({
     Key? key,
     required this.requestFunction,
@@ -125,10 +148,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
 
   Widget _buildLoading() {
     if (widget.useSkeleton && widget.skeleton != null) {
-      return Skeletonizer(
-        enabled: true,
-        child: widget.skeleton!,
-      );
+      return Skeletonizer(enabled: true, child: widget.skeleton!);
     }
     return Center(child: CircularProgressIndicator());
   }

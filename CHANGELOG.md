@@ -1,3 +1,8 @@
+## 0.1.4
+
+* Add comprehensive documentation to all loaders (`ApiInfiniteList`, `LoadMore`, `FutureButton`, etc.).
+* Fix missing `FutureButton.dart` and `ButtonUsageExample.dart` files in the package.
+
 ## 0.1.3
 
 * Add `skeletonizer` support to loaders (`ApiSinglePage`, `ApiSingleWidget`, `ApiInfiniteList`).

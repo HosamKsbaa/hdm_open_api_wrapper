@@ -3,19 +3,37 @@ import 'package:flutter/material.dart';
 
 typedef Future<bool> FutureCallBack();
 
+/// A widget that provides "load more" functionality for scrollable widgets.
+///
+/// It detects when the user scrolls to the bottom and triggers the [onLoadMore] callback.
 class LoadMore extends StatefulWidget {
+  /// Builder for the delegate that controls the load more UI.
   static DelegateBuilder<LoadMoreDelegate> buildDelegate =
       () => DefaultLoadMoreDelegate();
+
+  /// Builder for the text builder used in the default delegate.
   static DelegateBuilder<LoadMoreTextBuilder> buildTextBuilder =
       () => DefaultLoadMoreTextBuilder.english;
 
+  /// The scrollable widget (e.g., ListView, SliverList) to wrap.
   final Widget child;
+
+  /// Callback function to load more data. Returns true if successful.
   final FutureCallBack onLoadMore;
+
+  /// Whether there is no more data to load.
   final bool isFinish;
+
+  /// Delegate to customize the load more UI.
   final LoadMoreDelegate? delegate;
+
+  /// Text builder to customize the text displayed in different states.
   final LoadMoreTextBuilder? textBuilder;
+
+  /// Whether to trigger load more when the list is empty.
   final bool whenEmptyLoad;
 
+  /// Creates an instance of LoadMore.
   const LoadMore({
     Key? key,
     required this.child,

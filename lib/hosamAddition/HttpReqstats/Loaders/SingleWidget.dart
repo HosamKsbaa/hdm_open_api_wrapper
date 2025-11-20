@@ -21,29 +21,11 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   final Widget? skeleton;
 
   /// Creates an instance of ApiSinglePageSmall.
-  ApiSingleWidget({
-    Key? key,
-    required this.requestFunction,
-    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
-    required this.child,
-    this.useSkeleton = false,
-    this.skeleton,
-  })  : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(),
-        super(key: key);
+  ApiSingleWidget({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.useSkeleton = false, this.skeleton}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ApiBase(
-      requestFunction: requestFunction,
-      httpRequestsStates: httpRequestsStates,
-      buildIdle: _buildIdle,
-      buildLoading: _buildLoading,
-      buildSuccess: child,
-      buildError: _buildError,
-      buildEmptySuccess: _buildEmptySuccess,
-      useSkeleton: useSkeleton,
-      skeleton: skeleton,
-    );
+    return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, useSkeleton: useSkeleton, skeleton: skeleton);
   }
 
   Widget _buildIdle(BuildContext context) {
