@@ -8,12 +8,10 @@ typedef Future<bool> FutureCallBack();
 /// It detects when the user scrolls to the bottom and triggers the [onLoadMore] callback.
 class LoadMore extends StatefulWidget {
   /// Builder for the delegate that controls the load more UI.
-  static DelegateBuilder<LoadMoreDelegate> buildDelegate =
-      () => DefaultLoadMoreDelegate();
+  static DelegateBuilder<LoadMoreDelegate> buildDelegate = () => DefaultLoadMoreDelegate();
 
   /// Builder for the text builder used in the default delegate.
-  static DelegateBuilder<LoadMoreTextBuilder> buildTextBuilder =
-      () => DefaultLoadMoreTextBuilder.english;
+  static DelegateBuilder<LoadMoreTextBuilder> buildTextBuilder = () => DefaultLoadMoreTextBuilder.english;
 
   /// The scrollable widget (e.g., ListView, SliverList) to wrap.
   final Widget child;
@@ -34,15 +32,7 @@ class LoadMore extends StatefulWidget {
   final bool whenEmptyLoad;
 
   /// Creates an instance of LoadMore.
-  const LoadMore({
-    Key? key,
-    required this.child,
-    required this.onLoadMore,
-    this.textBuilder,
-    this.isFinish = false,
-    this.delegate,
-    this.whenEmptyLoad = true,
-  }) : super(key: key);
+  const LoadMore({Key? key, required this.child, required this.onLoadMore, this.textBuilder, this.isFinish = false, this.delegate, this.whenEmptyLoad = true}) : super(key: key);
 
   @override
   _LoadMoreState createState() => _LoadMoreState();
@@ -50,8 +40,7 @@ class LoadMore extends StatefulWidget {
 
 class _LoadMoreState extends State<LoadMore> {
   Widget get child => widget.child;
-  LoadMoreDelegate get loadMoreDelegate =>
-      widget.delegate ?? LoadMore.buildDelegate();
+  LoadMoreDelegate get loadMoreDelegate => widget.delegate ?? LoadMore.buildDelegate();
   LoadMoreStatus status = LoadMoreStatus.idle;
 
   @override
@@ -68,8 +57,7 @@ class _LoadMoreState extends State<LoadMore> {
   Widget? _buildListView(ListView listView) {
     var delegate = listView.childrenDelegate;
     if (delegate is SliverChildBuilderDelegate) {
-      SliverChildBuilderDelegate delegate =
-          listView.childrenDelegate as SliverChildBuilderDelegate;
+      SliverChildBuilderDelegate delegate = listView.childrenDelegate as SliverChildBuilderDelegate;
       if (!widget.whenEmptyLoad && delegate.estimatedChildCount == 0) {
         return listView;
       }
@@ -101,8 +89,7 @@ class _LoadMoreState extends State<LoadMore> {
         shrinkWrap: listView.shrinkWrap,
       );
     } else if (delegate is SliverChildListDelegate) {
-      SliverChildListDelegate delegate =
-          listView.childrenDelegate as SliverChildListDelegate;
+      SliverChildListDelegate delegate = listView.childrenDelegate as SliverChildListDelegate;
 
       if (!widget.whenEmptyLoad && delegate.estimatedChildCount == 0) {
         return listView;
@@ -135,9 +122,7 @@ class _LoadMoreState extends State<LoadMore> {
     final delegate = list.delegate;
 
     if (delegate is SliverChildListDelegate) {
-      return SliverList(
-        delegate: delegate,
-      );
+      return SliverList(delegate: delegate);
     }
 
     if (delegate is SliverChildBuilderDelegate) {
@@ -153,15 +138,7 @@ class _LoadMoreState extends State<LoadMore> {
       };
 
       return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          builder,
-          addAutomaticKeepAlives: delegate.addAutomaticKeepAlives,
-          addRepaintBoundaries: delegate.addRepaintBoundaries,
-          addSemanticIndexes: delegate.addSemanticIndexes,
-          childCount: viewCount,
-          semanticIndexCallback: delegate.semanticIndexCallback,
-          semanticIndexOffset: delegate.semanticIndexOffset,
-        ),
+        delegate: SliverChildBuilderDelegate(builder, addAutomaticKeepAlives: delegate.addAutomaticKeepAlives, addRepaintBoundaries: delegate.addRepaintBoundaries, addSemanticIndexes: delegate.addSemanticIndexes, childCount: viewCount, semanticIndexCallback: delegate.semanticIndexCallback, semanticIndexOffset: delegate.semanticIndexOffset),
       );
     }
 
@@ -171,14 +148,7 @@ class _LoadMoreState extends State<LoadMore> {
       }
       delegate.children.add(_buildLoadMoreView());
       return SliverList(
-        delegate: SliverChildListDelegate(
-          delegate.children,
-          addAutomaticKeepAlives: delegate.addAutomaticKeepAlives,
-          addRepaintBoundaries: delegate.addRepaintBoundaries,
-          addSemanticIndexes: delegate.addSemanticIndexes,
-          semanticIndexCallback: delegate.semanticIndexCallback,
-          semanticIndexOffset: delegate.semanticIndexOffset,
-        ),
+        delegate: SliverChildListDelegate(delegate.children, addAutomaticKeepAlives: delegate.addAutomaticKeepAlives, addRepaintBoundaries: delegate.addRepaintBoundaries, addSemanticIndexes: delegate.addSemanticIndexes, semanticIndexCallback: delegate.semanticIndexCallback, semanticIndexOffset: delegate.semanticIndexOffset),
       );
     }
 
@@ -195,11 +165,7 @@ class _LoadMoreState extends State<LoadMore> {
     }
     return NotificationListener<_RetryNotify>(
       child: NotificationListener<_BuildNotify>(
-        child: DefaultLoadMoreView(
-          status: status,
-          delegate: loadMoreDelegate,
-          textBuilder: widget.textBuilder ?? LoadMore.buildTextBuilder(),
-        ),
+        child: DefaultLoadMoreView(status: status, delegate: loadMoreDelegate, textBuilder: widget.textBuilder ?? LoadMore.buildTextBuilder()),
         onNotification: _onLoadMoreBuild,
       ),
       onNotification: _onRetry,
@@ -243,23 +209,13 @@ class _LoadMoreState extends State<LoadMore> {
   }
 }
 
-enum LoadMoreStatus {
-  idle,
-  loading,
-  fail,
-  nomore,
-}
+enum LoadMoreStatus { idle, loading, fail, nomore }
 
 class DefaultLoadMoreView extends StatefulWidget {
   final LoadMoreStatus status;
   final LoadMoreDelegate delegate;
   final LoadMoreTextBuilder textBuilder;
-  const DefaultLoadMoreView({
-    Key? key,
-    this.status = LoadMoreStatus.idle,
-    required this.delegate,
-    required this.textBuilder,
-  }) : super(key: key);
+  const DefaultLoadMoreView({Key? key, this.status = LoadMoreStatus.idle, required this.delegate, required this.textBuilder}) : super(key: key);
 
   @override
   DefaultLoadMoreViewState createState() => DefaultLoadMoreViewState();
@@ -278,18 +234,14 @@ class DefaultLoadMoreViewState extends State<DefaultLoadMoreView> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
-        if (widget.status == LoadMoreStatus.fail ||
-            widget.status == LoadMoreStatus.idle) {
+        if (widget.status == LoadMoreStatus.fail || widget.status == LoadMoreStatus.idle) {
           _RetryNotify().dispatch(context);
         }
       },
       child: Container(
         height: delegate.widgetHeight(widget.status),
         alignment: Alignment.center,
-        child: delegate.buildChild(
-          widget.status,
-          builder: widget.textBuilder,
-        ),
+        child: delegate.buildChild(widget.status, builder: widget.textBuilder),
       ),
     );
   }
@@ -317,8 +269,7 @@ class _RetryNotify extends Notification {}
 typedef T DelegateBuilder<T>();
 
 abstract class LoadMoreDelegate {
-  static DelegateBuilder<LoadMoreDelegate> buildWidget =
-      () => DefaultLoadMoreDelegate();
+  static DelegateBuilder<LoadMoreDelegate> buildWidget = () => DefaultLoadMoreDelegate();
 
   const LoadMoreDelegate();
 
@@ -326,21 +277,17 @@ abstract class LoadMoreDelegate {
 
   Duration loadMoreDelay() => Duration(milliseconds: _loadMoreDelay);
 
-  Widget buildChild(LoadMoreStatus status,
-      {LoadMoreTextBuilder builder = DefaultLoadMoreTextBuilder.english});
+  Widget buildChild(LoadMoreStatus status, {LoadMoreTextBuilder builder = DefaultLoadMoreTextBuilder.english});
 }
 
 class DefaultLoadMoreDelegate extends LoadMoreDelegate {
   const DefaultLoadMoreDelegate();
 
   @override
-  Widget buildChild(LoadMoreStatus status,
-      {LoadMoreTextBuilder builder = DefaultLoadMoreTextBuilder.english}) {
+  Widget buildChild(LoadMoreStatus status, {LoadMoreTextBuilder builder = DefaultLoadMoreTextBuilder.english}) {
     String text = builder(status);
     if (status == LoadMoreStatus.fail) {
-      return Container(
-        child: Text(text),
-      );
+      return Container(child: Text(text));
     }
     if (status == LoadMoreStatus.idle) {
       return Text(text);
@@ -354,14 +301,9 @@ class DefaultLoadMoreDelegate extends LoadMoreDelegate {
             SizedBox(
               width: _loadmoreIndicatorSize,
               height: _loadmoreIndicatorSize,
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.blue,
-              ),
+              child: CircularProgressIndicator(backgroundColor: Colors.blue),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(text),
-            ),
+            Padding(padding: const EdgeInsets.all(8.0), child: Text(text)),
           ],
         ),
       );

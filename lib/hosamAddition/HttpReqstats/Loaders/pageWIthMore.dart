@@ -32,25 +32,11 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   /// The list of data items loaded so far.
   final List<RepetedDate> data = [];
 
-  /// Whether to use skeleton loading.
-  final bool useSkeleton;
-
-  /// The skeleton widget to display when loading (if useSkeleton is true).
-  final Widget? skeleton;
+  /// Fake data to be used for skeleton loading.
+  final ResponseObj? fakeData;
 
   /// Creates an instance of ApiInfiniteList.
-  ApiInfiniteList({
-    Key? key,
-    required this.requestFunction,
-    this.httpRequestsStates,
-    required this.listViewBuilder,
-    required this.isFinished,
-    this.initialPageNumber = 1,
-    this.pageSize = 20,
-    required this.extractTheLIst,
-    this.useSkeleton = false,
-    this.skeleton,
-  }) : super(key: key);
+  ApiInfiniteList({Key? key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst, this.fakeData}) : super(key: key);
 
   @override
   _ApiInfiniteListState<ResponseObj, RepetedDate> createState() => _ApiInfiniteListState<ResponseObj, RepetedDate>();
@@ -147,8 +133,8 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
   }
 
   Widget _buildLoading() {
-    if (widget.useSkeleton && widget.skeleton != null) {
-      return Skeletonizer(enabled: true, child: widget.skeleton!);
+    if (widget.fakeData != null) {
+      return Skeletonizer(enabled: true, child: widget.listViewBuilder(context, widget.extractTheLIst(widget.fakeData!)));
     }
     return Center(child: CircularProgressIndicator());
   }

@@ -34,19 +34,7 @@ class FutureButton<T> extends StatefulWidget {
   final ButtonStyle buttonStyle;
 
   /// Creates an instance of FutureButton.
-  const FutureButton({
-    Key? key,
-    required this.requestFunction,
-    required this.onSuccess,
-    this.isReady = _defaultIsReady,
-    this.responseValidator,
-    this.successWidget,
-    this.loadingWidget,
-    this.errorWidget,
-    this.idleNotReadyWidget,
-    required this.idleWidget,
-    required this.buttonStyle,
-  }) : super(key: key);
+  const FutureButton({Key? key, required this.requestFunction, required this.onSuccess, this.isReady = _defaultIsReady, this.responseValidator, this.successWidget, this.loadingWidget, this.errorWidget, this.idleNotReadyWidget, required this.idleWidget, required this.buttonStyle}) : super(key: key);
 
   static bool _defaultIsReady() {
     return true;
@@ -64,12 +52,7 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
   @override
   Widget build(BuildContext context) {
     if (!widget.isReady()) {
-      return widget.idleNotReadyWidget ??
-          ElevatedButton(
-            onPressed: null,
-            style: widget.buttonStyle,
-            child: const Text("Not Ready"),
-          );
+      return widget.idleNotReadyWidget ?? ElevatedButton(onPressed: null, style: widget.buttonStyle, child: const Text("Not Ready"));
     }
 
     switch (states) {
@@ -80,28 +63,20 @@ class _FutureButtonState<T> extends State<FutureButton<T>> {
             ElevatedButton(
               onPressed: null,
               style: widget.buttonStyle,
-              child: const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
+              child: const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)),
             );
       case FutureButtonState.success:
         return widget.successWidget ??
             ElevatedButton(
               onPressed: () => _handlePress(),
-              style: widget.buttonStyle.copyWith(
-                backgroundColor: MaterialStateProperty.all(Colors.green),
-              ),
+              style: widget.buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
               child: const Icon(Icons.check, color: Colors.white),
             );
       case FutureButtonState.error:
         return widget.errorWidget ??
             ElevatedButton(
               onPressed: () => _handlePress(),
-              style: widget.buttonStyle.copyWith(
-                backgroundColor: MaterialStateProperty.all(Colors.red),
-              ),
+              style: widget.buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.red)),
               child: const Icon(Icons.error, color: Colors.white),
             );
     }

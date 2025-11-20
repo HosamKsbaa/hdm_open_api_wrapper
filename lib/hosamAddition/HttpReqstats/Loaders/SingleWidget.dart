@@ -14,18 +14,15 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   /// Widget builder for success state.
   final Widget Function(BuildContext context, ResponseObj response) child;
 
-  /// Whether to use skeleton loading.
-  final bool useSkeleton;
-
-  /// The skeleton widget to display when loading (if useSkeleton is true).
-  final Widget? skeleton;
+  /// Fake data to be used for skeleton loading.
+  final ResponseObj? fakeData;
 
   /// Creates an instance of ApiSinglePageSmall.
-  ApiSingleWidget({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.useSkeleton = false, this.skeleton}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
+  ApiSingleWidget({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, useSkeleton: useSkeleton, skeleton: skeleton);
+    return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, fakeData: fakeData);
   }
 
   Widget _buildIdle(BuildContext context) {
