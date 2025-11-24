@@ -8,7 +8,7 @@ final MessengerImpl HdmMsg = MessengerImpl();
 /// forAi
 /// replace all snakbars with hdmMsg.showSnackBar(title: 'title', message: 'message', contentType: ContentType.success); there is 3 types of content type success, warning, help , failure
 class MessengerImpl {
-  void showSnackBar({required title, required message, required contentType}) {
+  void showSnackBar({required String title, required String message, required ContentType contentType}) {
     if (HOAW.scaffoldMessengerKey.currentState != null) {
       HOAW.scaffoldMessengerKey.currentState!
         ..hideCurrentSnackBar()
