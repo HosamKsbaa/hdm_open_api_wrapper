@@ -33,16 +33,10 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
     widget.httpRequestsStates.setLoading();
     try {
       var response = await widget.requestFunction();
-      if (ApiErrorChecker.checkData(response)) {
-        // Use the error checker
-        if (response == null) {
-          throw Exception("Response data is null");
-        }
+     
         widget.httpRequestsStates.setSuccess(response);
         return response;
-      } else {
-        throw Exception("API response error.");
-      }
+     
     } catch (e, s) {
       widget.httpRequestsStates.setErr(e.toString(), s);
       throw e;
