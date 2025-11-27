@@ -33,10 +33,9 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
     widget.httpRequestsStates.setLoading();
     try {
       var response = await widget.requestFunction();
-     
-        widget.httpRequestsStates.setSuccess(response);
-        return response;
-     
+
+      widget.httpRequestsStates.setSuccess(response);
+      return response;
     } catch (e, s) {
       widget.httpRequestsStates.setErr(e.toString(), s);
       throw e;
