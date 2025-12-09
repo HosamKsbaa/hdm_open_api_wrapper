@@ -3,12 +3,16 @@ import 'package:hdm_open_api_wrapper/hdm_open_api_wrapper.dart';
 
 export 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
-final MessengerImpl HdmMsg = MessengerImpl();
+final MessengerImpl hdmMsg = MessengerImpl();
 
 /// forAi
 /// replace all snakbars with hdmMsg.showSnackBar(title: 'title', message: 'message', contentType: ContentType.success); there is 3 types of content type success, warning, help , failure
 class MessengerImpl {
-  void showSnackBar({required String title, required String message, required ContentType contentType}) {
+  void showSnackBar({
+    required String title,
+    required String message,
+    required ContentType contentType,
+  }) {
     if (HOAW.scaffoldMessengerKey.currentState != null) {
       HOAW.scaffoldMessengerKey.currentState!
         ..hideCurrentSnackBar()
@@ -31,7 +35,10 @@ class MessengerImpl {
           ),
         );
     } else {
-      HdmLogger.log('Hos ========================= > ScaffoldMessenger is not mounted', HdmLoggerMode.debug);
+      HdmLogger.log(
+        'Hos ========================= > ScaffoldMessenger is not mounted',
+        HdmLoggerMode.debug,
+      );
     }
   }
 }

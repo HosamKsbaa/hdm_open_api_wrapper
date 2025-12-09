@@ -1,4 +1,4 @@
-import '../HttpReqstats/ErrorLogic.dart';
+import '../HttpReqstats/error_logic.dart';
 
 /// A simple sound controller class for managing app sounds
 class SoundsController {

@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Base.dart';
-import '../ErrorLogic.dart';
-import '../httpStats.dart';
+import '../base.dart';
+import '../error_logic.dart';
+import '../http_stats.dart';
 
 /// A StatelessWidget that handles API requests and displays different states (idle, loading, success, error, empty success).
 class ApiSinglePage<ResponseObj> extends StatelessWidget {
@@ -19,14 +18,33 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
   final ResponseObj? fakeData;
 
   /// Creates an instance of ApiSinglePage.
-  ApiSinglePage({super.key, required this.requestFunction, required this.child, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
+  ApiSinglePage({
+    super.key,
+    required this.requestFunction,
+    required this.child,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+    this.fakeData,
+  }) : httpRequestsStates =
+           httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
 
   @override
   Widget build(BuildContext context) {
     if (ResponseObj == dynamic) {
-      HdmLogger.log("Warning: ApiSinglePage ResponseObj is dynamic", HdmLoggerMode.warning);
+      HdmLogger.log(
+        "Warning: ApiSinglePage ResponseObj is dynamic",
+        HdmLoggerMode.warning,
+      );
     }
-    return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, fakeData: fakeData);
+    return ApiBase(
+      requestFunction: requestFunction,
+      httpRequestsStates: httpRequestsStates,
+      buildIdle: _buildIdle,
+      buildLoading: _buildLoading,
+      buildSuccess: child,
+      buildError: _buildError,
+      buildEmptySuccess: _buildEmptySuccess,
+      fakeData: fakeData,
+    );
   }
 
   Widget _buildIdle(BuildContext context) {
@@ -52,7 +70,13 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
               const SizedBox(height: 50),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: SizedBox(height: 50, width: 50, child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ),
             ],
           ),
@@ -67,7 +91,10 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
       child: Column(
         children: [
           const Center(child: Icon(Icons.error, size: 20, color: Colors.red)),
-          Text('حدث خطأ ما..', style: const TextStyle(fontSize: 16, color: Colors.red)),
+          Text(
+            'حدث خطأ ما..',
+            style: const TextStyle(fontSize: 16, color: Colors.red),
+          ),
         ],
       ),
     );
@@ -84,7 +111,13 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
               const SizedBox(height: 50),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: SizedBox(height: 50, width: 50, child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ),
             ],
           ),

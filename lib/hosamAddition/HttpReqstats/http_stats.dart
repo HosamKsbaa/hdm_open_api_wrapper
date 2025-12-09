@@ -1,6 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'ErrorLogic.dart';
+import 'error_logic.dart';
 
 enum HDMHttpRequestsStatesEnum { idle, loading, success, fail, successButEmpty }
 
@@ -11,7 +10,12 @@ class HDMHttpRequestsStates<T> {
   Function()? onLoading;
   Function()? onIdleAgain;
   bool deBug = false;
-  HDMHttpRequestsStates({this.onSuccess, this.onErr, this.onLoading, this.onIdleAgain});
+  HDMHttpRequestsStates({
+    this.onSuccess,
+    this.onErr,
+    this.onLoading,
+    this.onIdleAgain,
+  });
 
   late HDMHttpRequestsStatesEnum states = HDMHttpRequestsStatesEnum.idle;
   VoidCallback? set;
@@ -59,9 +63,11 @@ class HDMHttpRequestsStates<T> {
   }
 
   void setSuccess(T result) {
-   
     if (result.runtimeType != T) {
-      HdmLogger.log("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}", HdmLoggerMode.warning);
+      HdmLogger.log(
+        "Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}",
+        HdmLoggerMode.warning,
+      );
     }
     if (onSuccess != null) {
       onSuccess!(result);

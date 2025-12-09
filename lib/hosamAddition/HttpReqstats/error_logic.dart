@@ -1,9 +1,13 @@
 enum HdmLoggerMode { debug, warning, error }
 
 class HdmLogger {
-  static void Function(String message, HdmLoggerMode mode, StackTrace? trace)? _logger;
+  static void Function(String message, HdmLoggerMode mode, StackTrace? trace)?
+  _logger;
 
-  static void setLogger(void Function(String message, HdmLoggerMode mode, StackTrace? trace) function) {
+  static void setLogger(
+    void Function(String message, HdmLoggerMode mode, StackTrace? trace)
+    function,
+  ) {
     _logger = function;
   }
 
@@ -11,7 +15,9 @@ class HdmLogger {
     if (_logger != null) {
       _logger!(message, mode, trace);
     } else {
-      throw Exception("HdmLogger not initialized! Call HOAW.setLogger before usage.");
+      throw Exception(
+        "HdmLogger not initialized! Call HOAW.setLogger before usage.",
+      );
     }
   }
 }
