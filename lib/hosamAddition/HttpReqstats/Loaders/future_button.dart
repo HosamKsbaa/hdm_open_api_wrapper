@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hdm_open_api_wrapper/hdm_open_api_wrapper.dart';
 
-/// A StatefulWidget that handles any Future requests and displays different states (idle, loading, success, error) for a button.
-/// This is the parent/generic class that can handle any type of Future operation.
+/// A powerful button widget that manages asynchronous operation states automatically.
+///
+/// [ApiButton] handles the entire lifecycle of an async request:
+/// - **Idle**: Shows [idleWidget] (clickable).
+/// - **Loading**: Shows [loadingWidget] (disabled) while [requestFunction] executes.
+/// - **Success**: Shows [successWidget] upon completion.
+/// - **Error**: Shows [errorWidget] (retryable) if an exception occurs.
+///
+/// Typically used for network requests like POST/PUT where visual feedback is required.
+///
+/// Example:
+/// ```dart
+/// ApiButton<User>(
+///   requestFunction: () => api.updateUser(user),
+///   onSuccess: (u) => hdmMsg.showSnackBar(message: 'Updated ${u.name}'),
+///   idleWidget: (style) => ElevatedButton(..., child: Text('Update')),
+/// )
+/// ```
 class ApiButton<T> extends StatefulWidget {
   /// Function to make the Future request.
   final Future<T> Function() requestFunction;

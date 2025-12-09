@@ -4,10 +4,18 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../error_logic.dart';
 import '../http_stats.dart';
 
-/// A StatefulWidget that handles infinite scrolling lists with API pagination.
+/// A complete solution for paginated lists with infinite scrolling.
 ///
-/// It manages the loading, success, error, and empty states of the list.
-/// It automatically loads more data when the user scrolls to the bottom.
+/// [ApiInfiniteList] automates the complex logic of fetching pages, concatenating results,
+/// and handling loading states.
+///
+/// It requires:
+/// - [requestFunction]: Fetches a page of data (1-based page index).
+/// - [extractTheLIst]: Unwraps the list of items from your API response object.
+/// - [isFinished]: Determines if the end of the list has been reached (e.g., list length < pageSize).
+/// - [listViewBuilder]: Builds the actual list UI (usually a `ListView`).
+///
+/// This widget uses [LoadMore] internally to detect scroll position.
 class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   /// Function to make the API request for a specific page.
   final Future<ResponseObj> Function(int pageNumber, int pageSize)
