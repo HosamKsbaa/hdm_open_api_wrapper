@@ -75,7 +75,13 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
     }
     httpRequestsStates.setLoading();
     try {
+      if (ResponseObj == dynamic) {
+        debugPrint("Warning: ResponseObj is dynamic in ${widget.runtimeType}");
+      }
       ResponseObj response = await widget.requestFunction(pageNumber, widget.pageSize);
+      if (response.runtimeType != ResponseObj) {
+        debugPrint("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}");
+      }
       if (response != null) {
         widget.data.addAll(widget.extractTheLIst(response));
         if (widget.isFinished(widget.extractTheLIst(response))) {

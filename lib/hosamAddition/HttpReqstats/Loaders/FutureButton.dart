@@ -105,7 +105,13 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
     });
 
     try {
+      if (T == dynamic) {
+        debugPrint("Warning: T is dynamic in ${widget.runtimeType}");
+      }
       T response = await widget.requestFunction();
+      if (response.runtimeType != T) {
+        debugPrint("Warning: Runtime type mismatch. Expected $T, got ${response.runtimeType}");
+      }
 
       // Check if response is valid (if validator is provided)
       bool isValid = widget.responseValidator?.call(response) ?? true;

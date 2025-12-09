@@ -22,6 +22,9 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (ResponseObj == dynamic) {
+      debugPrint("Warning: ApiSingleWidget ResponseObj is dynamic");
+    }
     return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, fakeData: fakeData);
   }
 

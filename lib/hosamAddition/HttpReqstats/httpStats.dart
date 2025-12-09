@@ -10,8 +10,7 @@ class HDMHttpRequestsStates<T> {
   Function()? onLoading;
   Function()? onIdleAgain;
   bool deBug = false;
-  HDMHttpRequestsStates(
-      {this.onSuccess, this.onErr, this.onLoading, this.onIdleAgain});
+  HDMHttpRequestsStates({this.onSuccess, this.onErr, this.onLoading, this.onIdleAgain});
 
   late HDMHttpRequestsStatesEnum states = HDMHttpRequestsStatesEnum.idle;
   VoidCallback? set;
@@ -60,6 +59,12 @@ class HDMHttpRequestsStates<T> {
   }
 
   void setSuccess(T result) {
+    if (T == dynamic) {
+      debugPrint("Warning: HDMHttpRequestsStates T is dynamic");
+    }
+    if (result.runtimeType != T) {
+      debugPrint("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}");
+    }
     if (this.onSuccess != null) {
       this.onSuccess!(result);
     }
