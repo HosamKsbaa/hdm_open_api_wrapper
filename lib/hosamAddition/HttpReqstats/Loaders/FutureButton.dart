@@ -106,11 +106,11 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
 
     try {
       if (T == dynamic) {
-        debugPrint("Warning: T is dynamic in ${widget.runtimeType}");
+        HdmLogger.log("Warning: T is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
       }
       T response = await widget.requestFunction();
       if (response.runtimeType != T) {
-        debugPrint("Warning: Runtime type mismatch. Expected $T, got ${response.runtimeType}");
+        HdmLogger.log("Warning: Runtime type mismatch. Expected $T, got ${response.runtimeType}", HdmLoggerMode.warning);
       }
 
       // Check if response is valid (if validator is provided)
@@ -127,11 +127,13 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
           states = FutureButtonState.error;
         });
       }
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      HdmLogger.log(error.toString(), HdmLoggerMode.error, stackTrace);
       setState(() {
         states = FutureButtonState.error;
       });
-    } catch (error, stackTrace) {
+    } catch (e, stackTrace) {
+      HdmLogger.log(e.toString(), HdmLoggerMode.error, stackTrace);
       setState(() {
         states = FutureButtonState.error;
       });

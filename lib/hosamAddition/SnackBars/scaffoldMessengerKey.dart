@@ -31,7 +31,7 @@ class MessengerImpl {
           ),
         );
     } else {
-      debugPrint('Hos ========================= > ScaffoldMessenger is not mounted');
+      HdmLogger.log('Hos ========================= > ScaffoldMessenger is not mounted', HdmLoggerMode.debug);
     }
   }
 }

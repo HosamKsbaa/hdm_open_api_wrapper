@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
+import '../HttpReqstats/ErrorLogic.dart';
 
 /// A simple sound controller class for managing app sounds
 class SoundsController {
   static final SoundsController _instance = SoundsController._internal();
-  
+
   factory SoundsController() {
     return _instance;
   }
-  
+
   SoundsController._internal();
 
   bool _soundEnabled = true;
@@ -23,10 +23,10 @@ class SoundsController {
   /// Play a sound (placeholder - implement with actual sound package)
   Future<void> playSound(String soundName) async {
     if (!_soundEnabled) return;
-    
+
     // TODO: Implement actual sound playing logic
     // Example: await AudioPlayer().play(AssetSource('sounds/$soundName.mp3'));
-    debugPrint('Playing sound: $soundName');
+    HdmLogger.log('Playing sound: $soundName', HdmLoggerMode.debug);
   }
 
   /// Play success sound

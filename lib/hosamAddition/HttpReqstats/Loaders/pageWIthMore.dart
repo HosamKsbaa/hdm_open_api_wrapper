@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hdm_open_api_wrapper/hosamAddition/HttpReqstats/Loaders/sorce.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../ErrorLogic.dart';
 import '../httpStats.dart';
 
 /// A StatefulWidget that handles infinite scrolling lists with API pagination.
@@ -76,11 +77,11 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
     httpRequestsStates.setLoading();
     try {
       if (ResponseObj == dynamic) {
-        debugPrint("Warning: ResponseObj is dynamic in ${widget.runtimeType}");
+        HdmLogger.log("Warning: ResponseObj is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
       }
       ResponseObj response = await widget.requestFunction(pageNumber, widget.pageSize);
       if (response.runtimeType != ResponseObj) {
-        debugPrint("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}");
+        HdmLogger.log("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}", HdmLoggerMode.warning);
       }
       if (response != null) {
         widget.data.addAll(widget.extractTheLIst(response));
@@ -96,6 +97,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
       }
       httpRequestsStates.setSuccess(widget.data);
     } catch (e, s) {
+      HdmLogger.log(e.toString(), HdmLoggerMode.error, s);
       httpRequestsStates.setErr(e.toString(), s);
     } finally {
       if (mounted) {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'ErrorLogic.dart';
 
 enum HDMHttpRequestsStatesEnum { idle, loading, success, fail, successButEmpty }
 
@@ -31,7 +32,7 @@ class HDMHttpRequestsStates<T> {
       this.onIdleAgain!();
     }
     states = HDMHttpRequestsStatesEnum.idle;
-    if (deBug) debugPrint("Set to idle");
+    if (deBug) HdmLogger.log("Set to idle", HdmLoggerMode.debug);
     _set();
   }
 
@@ -39,12 +40,11 @@ class HDMHttpRequestsStates<T> {
     if (this.onErr != null) {
       this.onErr!();
     }
-    debugPrint("Set to fail");
+    HdmLogger.log("Set to fail", HdmLoggerMode.error);
     states = HDMHttpRequestsStatesEnum.fail;
-    if (deBug) debugPrint("Set to fail");
+    if (deBug) HdmLogger.log("Set to fail", HdmLoggerMode.error);
     _set();
-    debugPrint(message);
-    debugPrint(stackTrace.toString());
+    HdmLogger.log(message, HdmLoggerMode.error, stackTrace);
     // _showErrorToast(message);
   }
 
@@ -54,22 +54,22 @@ class HDMHttpRequestsStates<T> {
 
   void setLoading() {
     states = HDMHttpRequestsStatesEnum.loading;
-    if (deBug) debugPrint("Set to loading");
+    if (deBug) HdmLogger.log("Set to loading", HdmLoggerMode.debug);
     _set();
   }
 
   void setSuccess(T result) {
     if (T == dynamic) {
-      debugPrint("Warning: HDMHttpRequestsStates T is dynamic");
+      HdmLogger.log("Warning: HDMHttpRequestsStates T is dynamic", HdmLoggerMode.warning);
     }
     if (result.runtimeType != T) {
-      debugPrint("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}");
+      HdmLogger.log("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}", HdmLoggerMode.warning);
     }
     if (this.onSuccess != null) {
       this.onSuccess!(result);
     }
     states = HDMHttpRequestsStatesEnum.success;
-    if (deBug) debugPrint("Set to success");
+    if (deBug) HdmLogger.log("Set to success", HdmLoggerMode.debug);
     _set();
   }
 }

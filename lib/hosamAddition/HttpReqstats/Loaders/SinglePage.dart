@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Base.dart';
+import '../ErrorLogic.dart';
 import '../httpStats.dart';
 
 /// A StatelessWidget that handles API requests and displays different states (idle, loading, success, error, empty success).
@@ -23,7 +24,7 @@ class ApiSinglePage<ResponseObj> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (ResponseObj == dynamic) {
-      debugPrint("Warning: ApiSinglePage ResponseObj is dynamic");
+      HdmLogger.log("Warning: ApiSinglePage ResponseObj is dynamic", HdmLoggerMode.warning);
     }
     return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, fakeData: fakeData);
   }

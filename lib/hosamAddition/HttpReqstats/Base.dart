@@ -32,18 +32,20 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
   Future<ResponseObj> _makeRequest() async {
     widget.httpRequestsStates.setLoading();
     if (ResponseObj == dynamic) {
-      debugPrint("Warning: ResponseObj is dynamic in ${widget.runtimeType}");
+      HdmLogger.log("Warning: ResponseObj is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
     }
     try {
       var response = await widget.requestFunction();
       if (response.runtimeType != ResponseObj) {
-        debugPrint("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}");
+        HdmLogger.log("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}", HdmLoggerMode.warning);
       }
 
       widget.httpRequestsStates.setSuccess(response);
       return response;
-    } catch (e, s) {
-      widget.httpRequestsStates.setErr(e.toString(), s);
+    } catch (e, stackTrace) {
+      debugPrint("Error in ApiBase: $e");
+      HdmLogger.log(e.toString(), HdmLoggerMode.error, stackTrace);
+      await widget.httpRequestsStates.setErr(e.toString(), stackTrace);
       throw e;
     }
   }
