@@ -19,7 +19,7 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   final ResponseObj? fakeData;
 
   /// Creates an instance of ApiSinglePageSmall.
-  ApiSingleWidget({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
+  ApiSingleWidget({super.key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
 
   @override
   Widget build(BuildContext context) {

@@ -38,12 +38,11 @@ class ApiButton<T> extends StatefulWidget {
   final bool? resetAfterSuccess;
 
   /// Creates an instance of FutureButton.
-  ApiButton({Key? key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isReady = _defaultIsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle, this.responseValidator, this.resetAfterSuccess})
+  ApiButton({super.key, required this.requestFunction, required this.onSuccess, Widget? successWidget, Widget? loadingWidget, Widget? errorWidget, this.isReady = _defaultIsReady, Widget? idleNotReadyWidget, required this.idleWidget, required this.buttonStyle, this.responseValidator, this.resetAfterSuccess})
     : successWidget = successWidget ?? _defaultSuccessButton(buttonStyle, resetAfterSuccess),
       loadingWidget = loadingWidget ?? _defaultLoadingButton(buttonStyle),
       errorWidget = errorWidget ?? _defaultErrorButton(buttonStyle),
-      idleNotReadyWidget = idleNotReadyWidget ?? _defaultIdleNotReady(buttonStyle),
-      super(key: key);
+      idleNotReadyWidget = idleNotReadyWidget ?? _defaultIdleNotReady(buttonStyle);
 
   static bool _defaultIsReady() {
     return true;
@@ -52,7 +51,7 @@ class ApiButton<T> extends StatefulWidget {
   static Widget _defaultSuccessButton(ButtonStyle buttonStyle, [bool? resetAfterSuccess]) {
     final message = resetAfterSuccess == true ? 'تم الإرسال' : 'تم بنجاح';
     return ElevatedButton(
-      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.green)),
+      style: buttonStyle.copyWith(backgroundColor: WidgetStateProperty.all(Colors.green)),
       onPressed: null,
       child: Text(message, style: const TextStyle(color: Colors.white)),
     );
@@ -60,7 +59,7 @@ class ApiButton<T> extends StatefulWidget {
 
   static Widget _defaultLoadingButton(ButtonStyle buttonStyle) {
     return ElevatedButton(
-      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.orangeAccent)),
+      style: buttonStyle.copyWith(backgroundColor: WidgetStateProperty.all(Colors.orangeAccent)),
       onPressed: null,
       child: const Row(
         mainAxisSize: MainAxisSize.min,
@@ -75,7 +74,7 @@ class ApiButton<T> extends StatefulWidget {
 
   static Widget _defaultErrorButton(ButtonStyle buttonStyle) {
     return ElevatedButton(
-      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.red)),
+      style: buttonStyle.copyWith(backgroundColor: WidgetStateProperty.all(Colors.red)),
       onPressed: null,
       child: const Text('حدث خطأ، حاول مرة أخرى', style: TextStyle(color: Colors.white)),
     );
@@ -83,7 +82,7 @@ class ApiButton<T> extends StatefulWidget {
 
   static Widget _defaultIdleNotReady(ButtonStyle buttonStyle) {
     return ElevatedButton(
-      style: buttonStyle.copyWith(backgroundColor: MaterialStateProperty.all(Colors.grey)),
+      style: buttonStyle.copyWith(backgroundColor: WidgetStateProperty.all(Colors.grey)),
       onPressed: null,
       child: const Text('رجاء وفر جميع البيانات', style: TextStyle(color: Colors.white)),
     );
@@ -140,7 +139,7 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildButton() {
+    Widget buildButton() {
       switch (states) {
         case FutureButtonState.loading:
           return widget.loadingWidget;
@@ -160,7 +159,7 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
       }
     }
 
-    return SizedBox(child: _buildButton(), width: double.infinity);
+    return SizedBox(child: buildButton(), width: double.infinity);
   }
 }
 
@@ -168,7 +167,7 @@ class ApiButtonItem extends StatelessWidget {
   final ButtonStyle? style;
   final Widget? child;
 
-  const ApiButtonItem({Key? key, this.style, required this.child}) : super(key: key);
+  const ApiButtonItem({super.key, this.style, required this.child});
 
   @override
   Widget build(BuildContext context) {

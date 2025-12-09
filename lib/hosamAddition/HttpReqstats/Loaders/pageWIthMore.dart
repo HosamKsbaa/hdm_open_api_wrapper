@@ -37,7 +37,7 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   final ResponseObj? fakeData;
 
   /// Creates an instance of ApiInfiniteList.
-  ApiInfiniteList({Key? key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst, this.fakeData}) : super(key: key);
+  ApiInfiniteList({super.key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst, this.fakeData});
 
   @override
   _ApiInfiniteListState<ResponseObj, RepetedDate> createState() => _ApiInfiniteListState<ResponseObj, RepetedDate>();
@@ -142,7 +142,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteL
 
   Widget _buildLoading() {
     if (widget.fakeData != null) {
-      return Skeletonizer(enabled: true, child: widget.listViewBuilder(context, widget.extractTheLIst(widget.fakeData!)));
+      return Skeletonizer(enabled: true, child: widget.listViewBuilder(context, widget.extractTheLIst(widget.fakeData as ResponseObj)));
     }
     return Center(child: CircularProgressIndicator());
   }

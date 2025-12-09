@@ -14,7 +14,7 @@ class ApiBase<ResponseObj> extends StatefulWidget {
   final Widget Function(BuildContext context) buildEmptySuccess;
   final ResponseObj? fakeData;
 
-  ApiBase({Key? key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>(), super(key: key);
+  ApiBase({super.key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess, this.fakeData}) : httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
 
   @override
   State<ApiBase> createState() => _ApiBaseState<ResponseObj>();
@@ -46,7 +46,7 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       debugPrint("Error in ApiBase: $e");
       HdmLogger.log(e.toString(), HdmLoggerMode.error, stackTrace);
       await widget.httpRequestsStates.setErr(e.toString(), stackTrace);
-      throw e;
+      rethrow;
     }
   }
 
@@ -58,7 +58,7 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           if (widget.fakeData != null) {
-            return Skeletonizer(enabled: true, child: widget.buildSuccess(context, widget.fakeData!));
+            return Skeletonizer(enabled: true, child: widget.buildSuccess(context, widget.fakeData as ResponseObj));
           }
           return widget.buildLoading(context);
         } else if (snapshot.hasError) {
@@ -78,7 +78,7 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
             ],
           );
         } else if (snapshot.hasData) {
-          return widget.buildSuccess(context, snapshot.data!);
+          return widget.buildSuccess(context, snapshot.data as ResponseObj);
         } else {
           return widget.buildIdle(context);
         }

@@ -28,8 +28,8 @@ class HDMHttpRequestsStates<T> {
   bool checkIfSetTOSuccess() => states == HDMHttpRequestsStatesEnum.success;
 
   void setIdle() {
-    if (this.onIdleAgain != null) {
-      this.onIdleAgain!();
+    if (onIdleAgain != null) {
+      onIdleAgain!();
     }
     states = HDMHttpRequestsStatesEnum.idle;
     if (deBug) HdmLogger.log("Set to idle", HdmLoggerMode.debug);
@@ -37,8 +37,8 @@ class HDMHttpRequestsStates<T> {
   }
 
   Future<void> setErr(String message, StackTrace stackTrace) async {
-    if (this.onErr != null) {
-      this.onErr!();
+    if (onErr != null) {
+      onErr!();
     }
     HdmLogger.log("Set to fail", HdmLoggerMode.error);
     states = HDMHttpRequestsStatesEnum.fail;
@@ -63,8 +63,8 @@ class HDMHttpRequestsStates<T> {
     if (result.runtimeType != T) {
       HdmLogger.log("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}", HdmLoggerMode.warning);
     }
-    if (this.onSuccess != null) {
-      this.onSuccess!(result);
+    if (onSuccess != null) {
+      onSuccess!(result);
     }
     states = HDMHttpRequestsStatesEnum.success;
     if (deBug) HdmLogger.log("Set to success", HdmLoggerMode.debug);
