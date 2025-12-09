@@ -59,9 +59,7 @@ class HDMHttpRequestsStates<T> {
   }
 
   void setSuccess(T result) {
-    if (T == dynamic) {
-      HdmLogger.log("Warning: HDMHttpRequestsStates T is dynamic", HdmLoggerMode.warning);
-    }
+   
     if (result.runtimeType != T) {
       HdmLogger.log("Warning: HDMHttpRequestsStates mismatch. Expected $T, got ${result.runtimeType}", HdmLoggerMode.warning);
     }

@@ -105,9 +105,7 @@ class _ApiButtonState<T> extends State<ApiButton<T>> {
     });
 
     try {
-      if (T == dynamic) {
-        HdmLogger.log("Warning: T is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
-      }
+     
       T response = await widget.requestFunction();
       if (response.runtimeType != T) {
         HdmLogger.log("Warning: Runtime type mismatch. Expected $T, got ${response.runtimeType}", HdmLoggerMode.warning);
