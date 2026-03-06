@@ -18,8 +18,7 @@ import '../http_stats.dart';
 /// This widget uses [LoadMore] internally to detect scroll position.
 class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   /// Function to make the API request for a specific page.
-  final Future<ResponseObj> Function(int pageNumber, int pageSize)
-  requestFunction;
+  final Future<ResponseObj> Function(int pageNumber, int pageSize) requestFunction;
 
   /// State management for HTTP requests.
   final HDMHttpRequestsStates<List<RepetedDate>>? httpRequestsStates;
@@ -28,8 +27,7 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   final List<RepetedDate> Function(ResponseObj responseObj) extractTheLIst;
 
   /// Builder function for the list view.
-  final Widget Function(BuildContext context, List<RepetedDate> items)
-  listViewBuilder;
+  final Widget Function(BuildContext context, List<RepetedDate> items) listViewBuilder;
 
   /// Function to check if there is no more data to load.
   final bool Function(List<RepetedDate> response) isFinished;
@@ -46,26 +44,17 @@ class ApiInfiniteList<ResponseObj, RepetedDate> extends StatefulWidget {
   /// Fake data to be used for skeleton loading.
   final ResponseObj? fakeData;
 
+  /// Optional widget to show when the API request is in an idle or initial loading state.
+  final Widget? idleWidget;
+
   /// Creates an instance of ApiInfiniteList.
-  ApiInfiniteList({
-    super.key,
-    required this.requestFunction,
-    this.httpRequestsStates,
-    required this.listViewBuilder,
-    required this.isFinished,
-    this.initialPageNumber = 1,
-    this.pageSize = 20,
-    required this.extractTheLIst,
-    this.fakeData,
-  });
+  ApiInfiniteList({super.key, required this.requestFunction, this.httpRequestsStates, required this.listViewBuilder, required this.isFinished, this.initialPageNumber = 1, this.pageSize = 20, required this.extractTheLIst, this.fakeData, this.idleWidget}) : assert(fakeData == null || idleWidget == null, 'Cannot provide both fakeData and idleWidget');
 
   @override
-  State<ApiInfiniteList<ResponseObj, RepetedDate>> createState() =>
-      _ApiInfiniteListState<ResponseObj, RepetedDate>();
+  State<ApiInfiniteList<ResponseObj, RepetedDate>> createState() => _ApiInfiniteListState<ResponseObj, RepetedDate>();
 }
 
-class _ApiInfiniteListState<ResponseObj, RepetedDate>
-    extends State<ApiInfiniteList<ResponseObj, RepetedDate>> {
+class _ApiInfiniteListState<ResponseObj, RepetedDate> extends State<ApiInfiniteList<ResponseObj, RepetedDate>> {
   late int pageNumber;
   late HDMHttpRequestsStates<List<RepetedDate>> httpRequestsStates;
   bool isFinished = false;
@@ -75,8 +64,7 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate>
   void initState() {
     super.initState();
     pageNumber = widget.initialPageNumber;
-    httpRequestsStates =
-        widget.httpRequestsStates ?? HDMHttpRequestsStates<List<RepetedDate>>();
+    httpRequestsStates = widget.httpRequestsStates ?? HDMHttpRequestsStates<List<RepetedDate>>();
     httpRequestsStates.set = () {
       if (mounted) {
         setState(() {});
@@ -100,20 +88,11 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate>
     httpRequestsStates.setLoading();
     try {
       if (ResponseObj == dynamic) {
-        HdmLogger.log(
-          "Warning: ResponseObj is dynamic in ${widget.runtimeType}",
-          HdmLoggerMode.warning,
-        );
+        HdmLogger.log("Warning: ResponseObj is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
       }
-      ResponseObj response = await widget.requestFunction(
-        pageNumber,
-        widget.pageSize,
-      );
+      ResponseObj response = await widget.requestFunction(pageNumber, widget.pageSize);
       if (response.runtimeType != ResponseObj) {
-        HdmLogger.log(
-          "Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}",
-          HdmLoggerMode.warning,
-        );
+        HdmLogger.log("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}", HdmLoggerMode.warning);
       }
       if (response != null) {
         widget.data.addAll(widget.extractTheLIst(response));
@@ -155,17 +134,13 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate>
   }
 
   Widget _buildContent() {
-    if (httpRequestsStates.states == HDMHttpRequestsStatesEnum.loading &&
-        (pageNumber == 1)) {
+    if (httpRequestsStates.states == HDMHttpRequestsStatesEnum.loading && (pageNumber == 1)) {
       return _buildLoading();
     } else if (httpRequestsStates.states case HDMHttpRequestsStatesEnum.fail) {
       return _buildError();
-    } else if (httpRequestsStates.states
-        case HDMHttpRequestsStatesEnum.success ||
-            HDMHttpRequestsStatesEnum.loading) {
+    } else if (httpRequestsStates.states case HDMHttpRequestsStatesEnum.success || HDMHttpRequestsStatesEnum.loading) {
       return _buildSuccess(context, widget.data);
-    } else if (httpRequestsStates.states
-        case HDMHttpRequestsStatesEnum.successButEmpty) {
+    } else if (httpRequestsStates.states case HDMHttpRequestsStatesEnum.successButEmpty) {
       return _buildEmptySuccess();
     } else {
       return _buildIdle();
@@ -178,13 +153,10 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate>
 
   Widget _buildLoading() {
     if (widget.fakeData != null) {
-      return Skeletonizer(
-        enabled: true,
-        child: widget.listViewBuilder(
-          context,
-          widget.extractTheLIst(widget.fakeData as ResponseObj),
-        ),
-      );
+      return Skeletonizer(enabled: true, child: widget.listViewBuilder(context, widget.extractTheLIst(widget.fakeData as ResponseObj)));
+    }
+    if (widget.idleWidget != null) {
+      return widget.idleWidget!;
     }
     return Center(child: CircularProgressIndicator());
   }
@@ -200,17 +172,12 @@ class _ApiInfiniteListState<ResponseObj, RepetedDate>
   Widget _buildSuccess(BuildContext context, List<RepetedDate> data) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
-        if (!isLoading &&
-            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+        if (!isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
           _loadMore();
         }
         return false;
       },
-      child: LoadMore(
-        isFinish: isFinished,
-        onLoadMore: _loadMore,
-        child: widget.listViewBuilder(context, widget.data),
-      ),
+      child: LoadMore(isFinish: isFinished, onLoadMore: _loadMore, child: widget.listViewBuilder(context, widget.data)),
     );
   }
 }
