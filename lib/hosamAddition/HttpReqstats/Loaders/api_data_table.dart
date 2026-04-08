@@ -23,19 +23,98 @@ class ApiDataTable<TResponse, TItem> extends StatefulWidget {
   final List<TItem> Function(TResponse response) extractTheList;
   final bool Function(List<TItem> items) isFinished;
   final int pageSize;
+  final void Function(int columnIndex, String action)? onColumnAction;
 
-  const ApiDataTable({super.key, required this.columns, required this.rowBuilder, required this.requestFunction, required this.fakeData, required this.extractTheList, required this.isFinished, this.minWidth = 1000, this.empty, this.pageSize = 20, this.loadingColor, this.errorColor, this.hintColor, this.tableDecoration, this.loadingText, this.noMoreDataText, this.errorText});
+  const ApiDataTable({
+    super.key,
+    required this.columns,
+    required this.rowBuilder,
+    required this.requestFunction,
+    required this.fakeData,
+    required this.extractTheList,
+    required this.isFinished,
+    this.minWidth = 1000,
+    this.empty,
+    this.pageSize = 20,
+    this.loadingColor,
+    this.errorColor,
+    this.hintColor,
+    this.tableDecoration,
+    this.loadingText,
+    this.noMoreDataText,
+    this.errorText,
+    this.onColumnAction,
+  });
 
   @override
-  State<ApiDataTable<TResponse, TItem>> createState() => _ApiDataTableState<TResponse, TItem>();
+  State<ApiDataTable<TResponse, TItem>> createState() => ApiDataTableState<TResponse, TItem>();
 }
 
-class _ApiDataTableState<TResponse, TItem> extends State<ApiDataTable<TResponse, TItem>> {
+class ApiDataTableState<TResponse, TItem> extends State<ApiDataTable<TResponse, TItem>> {
   int _pageNumber = 1;
   bool _isLoading = false;
   bool _isFinished = false;
   bool _isInitialLoading = true;
   List<TItem> _data = [];
+  final List<TItem> _originalData = [];
+  List<TItem> _filteredData = [];
+  bool _isLocalFiltered = false;
+  int? _lastSortColumnIndex;
+  int? _filteredColumnIndex;
+  bool _isAscending = true;
+
+  bool get isFinishedData => _isFinished;
+
+  void sortLocal(int Function(TItem a, TItem b) compareHandler, {int? columnIndex, bool? forceAscending}) {
+    setState(() {
+      if (forceAscending != null) {
+        _isAscending = forceAscending;
+        _lastSortColumnIndex = columnIndex;
+      } else if (columnIndex != null) {
+        if (_lastSortColumnIndex == columnIndex) {
+          _isAscending = !_isAscending;
+        } else {
+          _lastSortColumnIndex = columnIndex;
+          _isAscending = true;
+        }
+      }
+
+      final comparator = _isAscending ? compareHandler : (TItem a, TItem b) => compareHandler(b, a);
+
+      if (_isLocalFiltered) {
+        _filteredData.sort(comparator);
+      } else {
+        _data.sort(comparator);
+      }
+    });
+  }
+
+  void filterLocal(bool Function(TItem item) queryHandler, {int? columnIndex}) {
+    setState(() {
+      _filteredData = _data.where(queryHandler).toList();
+      _isLocalFiltered = true;
+      _filteredColumnIndex = columnIndex;
+    });
+  }
+
+  void clearLocalFilter() {
+    setState(() {
+      _isLocalFiltered = false;
+      _filteredData = [];
+      _filteredColumnIndex = null;
+    });
+  }
+
+  void clearLocalSortAndFilter() {
+    setState(() {
+      _isLocalFiltered = false;
+      _filteredData = [];
+      _data = List.from(_originalData);
+      _lastSortColumnIndex = null;
+      _filteredColumnIndex = null;
+      _isAscending = true;
+    });
+  }
 
   @override
   void initState() {
@@ -58,9 +137,12 @@ class _ApiDataTableState<TResponse, TItem> extends State<ApiDataTable<TResponse,
       setState(() {
         if (_isInitialLoading) {
           _data = newItems;
+          _originalData.clear();
+          _originalData.addAll(newItems);
           _isInitialLoading = false;
         } else {
           _data.addAll(newItems);
+          _originalData.addAll(newItems);
         }
 
         if (widget.isFinished(newItems)) {
@@ -135,8 +217,8 @@ class _ApiDataTableState<TResponse, TItem> extends State<ApiDataTable<TResponse,
                       child: Text('لا يوجد بيانات', style: TextStyle(color: widget.hintColor ?? Colors.grey)),
                     ),
                 showCheckboxColumn: false,
-                columns: widget.columns,
-                rows: _data.map((item) => widget.rowBuilder(item)).toList(),
+                columns: _buildColumns(context),
+                rows: (_isLocalFiltered ? _filteredData : _data).map((item) => widget.rowBuilder(item)).toList(),
               ),
             ),
           ),
@@ -193,5 +275,28 @@ class _ApiDataTableState<TResponse, TItem> extends State<ApiDataTable<TResponse,
         ],
       ),
     );
+  }
+
+  List<DataColumn> _buildColumns(BuildContext context) {
+    return widget.columns.asMap().entries.map((entry) {
+      final DataColumn col = entry.value;
+
+      if (col is DataColumn2) {
+        return DataColumn2(
+          label: col.label,
+          tooltip: col.tooltip,
+          numeric: col.numeric,
+          onSort: col.onSort,
+          size: col.size,
+          fixedWidth: col.fixedWidth,
+        );
+      }
+      return DataColumn(
+        label: col.label,
+        tooltip: col.tooltip,
+        numeric: col.numeric,
+        onSort: col.onSort,
+      );
+    }).toList();
   }
 }
