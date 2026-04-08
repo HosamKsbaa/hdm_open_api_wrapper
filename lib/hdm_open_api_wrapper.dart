@@ -11,6 +11,7 @@ export 'hosamAddition/Converters/converters.dart';
 export 'hosamAddition/HttpReqstats/Loaders/page_with_more.dart';
 export 'hosamAddition/HttpReqstats/Loaders/single_page.dart';
 export 'hosamAddition/HttpReqstats/Loaders/future_button.dart';
+export 'hosamAddition/HttpReqstats/Loaders/api_data_table.dart';
 
 /// A Calculator.
 class HOAW {

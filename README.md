@@ -134,7 +134,7 @@ hdmMsg.showSnackBar(
 6.  **Naming**: Reference widgets by their correct class names:
     *   `ApiButton` (not `FutureButton`)
     *   `ApiInfiniteList` (not `PageWithMore`)
-    *   `hdmMsg` (not `HdmMsg`)
+    *   `hdmMsg` (not `hdmMsg`)
 
 ---
 

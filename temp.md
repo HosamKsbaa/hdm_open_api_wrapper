@@ -1177,7 +1177,7 @@ To use this, ensure your models have a `fake()` factory or method that returns a
 ApiButton<UserResponse>(
   requestFunction: () => restClient.createUser(userRequest),
   onSuccess: (response) {
-    HDMMsg.showSnackBar(
+    hdmMsg.showSnackBar(
       title: 'Success',
       message: 'User created successfully',
       contentType: ContentType.success,

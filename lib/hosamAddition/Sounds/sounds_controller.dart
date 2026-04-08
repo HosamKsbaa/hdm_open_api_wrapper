@@ -24,7 +24,7 @@ class SoundsController {
   Future<void> playSound(String soundName) async {
     if (!_soundEnabled) return;
 
-    // TODO: Implement actual sound playing logic
+    // Implement actual sound playing logic
     // Example: await AudioPlayer().play(AssetSource('sounds/$soundName.mp3'));
     HdmLogger.log('Playing sound: $soundName', HdmLoggerMode.debug);
   }
