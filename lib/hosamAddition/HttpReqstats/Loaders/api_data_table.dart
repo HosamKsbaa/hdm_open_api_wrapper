@@ -66,7 +66,7 @@ class ApiDataTable<TResponse, TItem> extends StatefulWidget {
     this.errorText,
     this.onColumnAction,
     this.showViewSelector = false,
-    this.defaultViewMode = ApiDataTableViewMode.table,
+    this.defaultViewMode = ApiDataTableViewMode.card,
     this.listCardBuilder,
   });
 
@@ -86,7 +86,7 @@ class ApiDataTableState<TResponse, TItem>
   List<TItem> _filteredData = [];
   bool _isLocalFiltered = false;
   int? _lastSortColumnIndex;
-  int? _filteredColumnIndex;
+
   bool _isAscending = true;
   late ApiDataTableViewMode _currentViewMode;
   bool _isSearchModeEnabled = false;
@@ -127,7 +127,7 @@ class ApiDataTableState<TResponse, TItem>
     setState(() {
       _filteredData = _data.where(queryHandler).toList();
       _isLocalFiltered = true;
-      _filteredColumnIndex = columnIndex;
+
     });
   }
 
@@ -135,7 +135,7 @@ class ApiDataTableState<TResponse, TItem>
     setState(() {
       _isLocalFiltered = false;
       _filteredData = [];
-      _filteredColumnIndex = null;
+
     });
   }
 
@@ -145,7 +145,7 @@ class ApiDataTableState<TResponse, TItem>
       _filteredData = [];
       _data = List.from(_originalData);
       _lastSortColumnIndex = null;
-      _filteredColumnIndex = null;
+
       _isAscending = true;
     });
   }
@@ -340,8 +340,9 @@ class ApiDataTableState<TResponse, TItem>
       (c) => c is ApiDataColumn && c.onSearch != null,
     );
 
-    if (!widget.showViewSelector && !hasSearchableColumns)
+    if (!widget.showViewSelector && !hasSearchableColumns) {
       return const SizedBox.shrink();
+    }
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
