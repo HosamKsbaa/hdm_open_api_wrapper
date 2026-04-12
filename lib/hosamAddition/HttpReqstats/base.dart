@@ -8,15 +8,30 @@ class ApiBase<ResponseObj> extends StatefulWidget {
   final HDMHttpRequestsStates<ResponseObj> httpRequestsStates;
   final Widget Function(BuildContext context) buildIdle;
   final Widget Function(BuildContext context) buildLoading;
-  final Widget Function(BuildContext context, ResponseObj response) buildSuccess;
+  final Widget Function(BuildContext context, ResponseObj response)
+  buildSuccess;
   final Widget Function(BuildContext context) buildError;
   final Widget Function(BuildContext context) buildEmptySuccess;
   final ResponseObj? fakeData;
   final Widget? idleWidget;
 
-  ApiBase({super.key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.buildIdle, required this.buildLoading, required this.buildSuccess, required this.buildError, required this.buildEmptySuccess, this.fakeData, this.idleWidget})
-    : assert(fakeData == null || idleWidget == null, 'Cannot provide both fakeData and idleWidget'),
-      httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
+  ApiBase({
+    super.key,
+    required this.requestFunction,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+    required this.buildIdle,
+    required this.buildLoading,
+    required this.buildSuccess,
+    required this.buildError,
+    required this.buildEmptySuccess,
+    this.fakeData,
+    this.idleWidget,
+  }) : assert(
+         fakeData == null || idleWidget == null,
+         'Cannot provide both fakeData and idleWidget',
+       ),
+       httpRequestsStates =
+           httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
 
   @override
   State<ApiBase> createState() => _ApiBaseState<ResponseObj>();
@@ -34,12 +49,18 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
   Future<ResponseObj> _makeRequest() async {
     widget.httpRequestsStates.setLoading();
     if (ResponseObj == dynamic) {
-      HdmLogger.log("Warning: ResponseObj is dynamic in ${widget.runtimeType}", HdmLoggerMode.warning);
+      HdmLogger.log(
+        "Warning: ResponseObj is dynamic in ${widget.runtimeType}",
+        HdmLoggerMode.warning,
+      );
     }
     try {
       var response = await widget.requestFunction();
       if (response.runtimeType != ResponseObj) {
-        HdmLogger.log("Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}", HdmLoggerMode.warning);
+        HdmLogger.log(
+          "Warning: Runtime type mismatch. Expected $ResponseObj, got ${response.runtimeType}",
+          HdmLoggerMode.warning,
+        );
       }
 
       widget.httpRequestsStates.setSuccess(response);
@@ -60,7 +81,13 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           if (widget.fakeData != null) {
-            return Skeletonizer(enabled: true, child: widget.buildSuccess(context, widget.fakeData as ResponseObj));
+            return Skeletonizer(
+              enabled: true,
+              child: widget.buildSuccess(
+                context,
+                widget.fakeData as ResponseObj,
+              ),
+            );
           }
           if (widget.idleWidget != null) {
             return widget.idleWidget!;
@@ -77,7 +104,10 @@ class _ApiBaseState<ResponseObj> extends State<ApiBase<ResponseObj>> {
                   onPressed: () => setState(() {
                     _future = _makeRequest(); // Retry request
                   }),
-                  child: const Text('المحاوله مره اخري', style: TextStyle(fontSize: 16, color: Colors.white)),
+                  child: const Text(
+                    'المحاوله مره اخري',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
             ],

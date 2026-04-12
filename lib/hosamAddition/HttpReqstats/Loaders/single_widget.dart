@@ -21,14 +21,39 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   final Widget? idleWidget;
 
   /// Creates an instance of ApiSinglePageSmall.
-  ApiSingleWidget({super.key, required this.requestFunction, HDMHttpRequestsStates<ResponseObj>? httpRequestsStates, required this.child, this.fakeData, this.idleWidget}) : assert(fakeData == null || idleWidget == null, 'Cannot provide both fakeData and idleWidget'), httpRequestsStates = httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
+  ApiSingleWidget({
+    super.key,
+    required this.requestFunction,
+    HDMHttpRequestsStates<ResponseObj>? httpRequestsStates,
+    required this.child,
+    this.fakeData,
+    this.idleWidget,
+  }) : assert(
+         fakeData == null || idleWidget == null,
+         'Cannot provide both fakeData and idleWidget',
+       ),
+       httpRequestsStates =
+           httpRequestsStates ?? HDMHttpRequestsStates<ResponseObj>();
 
   @override
   Widget build(BuildContext context) {
     if (ResponseObj == dynamic) {
-      HdmLogger.log("Warning: ApiSingleWidget ResponseObj is dynamic", HdmLoggerMode.warning);
+      HdmLogger.log(
+        "Warning: ApiSingleWidget ResponseObj is dynamic",
+        HdmLoggerMode.warning,
+      );
     }
-    return ApiBase(requestFunction: requestFunction, httpRequestsStates: httpRequestsStates, buildIdle: _buildIdle, buildLoading: _buildLoading, buildSuccess: child, buildError: _buildError, buildEmptySuccess: _buildEmptySuccess, fakeData: fakeData, idleWidget: idleWidget);
+    return ApiBase(
+      requestFunction: requestFunction,
+      httpRequestsStates: httpRequestsStates,
+      buildIdle: _buildIdle,
+      buildLoading: _buildLoading,
+      buildSuccess: child,
+      buildError: _buildError,
+      buildEmptySuccess: _buildEmptySuccess,
+      fakeData: fakeData,
+      idleWidget: idleWidget,
+    );
   }
 
   Widget _buildIdle(BuildContext context) {
@@ -36,7 +61,13 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
   }
 
   Widget _buildLoading(BuildContext context) {
-    return const Center(child: SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2.0)));
+    return const Center(
+      child: SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(strokeWidth: 2.0),
+      ),
+    );
   }
 
   Widget _buildError(BuildContext context) {
@@ -45,7 +76,10 @@ class ApiSingleWidget<ResponseObj> extends StatelessWidget {
       child: Column(
         children: [
           const Center(child: Icon(Icons.error, size: 20, color: Colors.red)),
-          Text('حدث خطأ ما..', style: const TextStyle(fontSize: 16, color: Colors.red)),
+          Text(
+            'حدث خطأ ما..',
+            style: const TextStyle(fontSize: 16, color: Colors.red),
+          ),
         ],
       ),
     );
