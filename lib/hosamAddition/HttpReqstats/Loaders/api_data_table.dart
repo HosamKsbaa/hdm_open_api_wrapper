@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -33,6 +34,7 @@ class ApiDataTable<TResponse, TItem> extends StatefulWidget {
   final Decoration? tableDecoration;
   final String? loadingText;
   final String? noMoreDataText;
+  final int? noMoreDataDuration;
   final String? errorText;
   final bool showViewSelector;
   final ApiDataTableViewMode defaultViewMode;
@@ -63,6 +65,7 @@ class ApiDataTable<TResponse, TItem> extends StatefulWidget {
     this.tableDecoration,
     this.loadingText,
     this.noMoreDataText,
+    this.noMoreDataDuration,
     this.errorText,
     this.onColumnAction,
     this.showViewSelector = false,
@@ -90,8 +93,16 @@ class ApiDataTableState<TResponse, TItem>
   bool _isAscending = true;
   late ApiDataTableViewMode _currentViewMode;
   bool _isSearchModeEnabled = false;
+  bool _showNoMoreDataText = false;
+  Timer? _noMoreDataTimer;
 
   bool get isFinishedData => _isFinished;
+
+  @override
+  void dispose() {
+    _noMoreDataTimer?.cancel();
+    super.dispose();
+  }
 
   void sortLocal(
     int Function(TItem a, TItem b) compareHandler, {
@@ -185,6 +196,17 @@ class ApiDataTableState<TResponse, TItem>
 
         if (widget.isFinished(newItems)) {
           _isFinished = true;
+          _showNoMoreDataText = true;
+          if (widget.noMoreDataDuration != null) {
+            _noMoreDataTimer?.cancel();
+            _noMoreDataTimer = Timer(Duration(seconds: widget.noMoreDataDuration!), () {
+              if (mounted) {
+                setState(() {
+                  _showNoMoreDataText = false;
+                });
+              }
+            });
+          }
         } else {
           _pageNumber++;
         }
@@ -299,7 +321,7 @@ class ApiDataTableState<TResponse, TItem>
                     ),
                   ),
 
-                if (_isFinished && _data.isNotEmpty)
+                if (_isFinished && _showNoMoreDataText && _data.isNotEmpty)
                   Positioned(
                     bottom: 16.h,
                     left: 0,
